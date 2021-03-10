@@ -38,9 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // configure AuthenticationManager so that it knows from where to load
         // user for matching credentials
         // Use BCryptPasswordEncoder
-        auth.userDetailsService(jwtUserService).passwordEncoder(passwordEncoder()).and().inMemoryAuthentication()
-                .withUser("user").password(passwordEncoder().encode("user"))
-                .roles("ADMIN").authorities("ADMIN");
+        auth.userDetailsService(jwtUserService).passwordEncoder(passwordEncoder());
+//                .withUser("user").password(passwordEncoder().encode("user"))
+//               auth .roles("ADMIN").authorities("ACCESS_SWAGGER");
     }
 
 
@@ -71,7 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // dont authenticate this particular request
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
-                .antMatchers("/swagger-ui.html").hasAuthority("ADMIN")
+                .antMatchers("/ws").permitAll()
+                .antMatchers("/swagger-ui.html").hasAuthority("ACCESS_SWAGGER")
                 .anyRequest().authenticated();
     }
 

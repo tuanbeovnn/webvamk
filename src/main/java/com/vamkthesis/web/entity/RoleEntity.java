@@ -16,7 +16,7 @@ public class RoleEntity extends BaseEntity {
     private String name;
     private String discription;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserEntity> users = new ArrayList<>();
 
     @Override

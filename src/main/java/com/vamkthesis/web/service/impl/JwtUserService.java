@@ -3,14 +3,12 @@ package com.vamkthesis.web.service.impl;
 
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.MyUserDTO;
-import com.vamkthesis.web.dto.UsernamePasswordAuthenticationTokenCustom;
 import com.vamkthesis.web.entity.RoleEntity;
 import com.vamkthesis.web.entity.UserEntity;
 import com.vamkthesis.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,7 +26,7 @@ public class JwtUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        UsernamePasswordAuthenticationTokenCustom authenticationTokenToken = (UsernamePasswordAuthenticationTokenCustom) SecurityContextHolder.getContext().getAuthentication();
+//        UsernamePasswordAuthenticationTokenCustom authenticationTokenToken = (UsernamePasswordAuthenticationTokenCustom) SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = userRepository.findOneByEmail(email);
         if(userEntity == null){
             throw new UsernameNotFoundException("User not found");

@@ -76,7 +76,14 @@ public class ProductApi {
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public PageList<ProductInput> showListProductCategory(Pageable pageable) {
-        return productService.findAllByNewest(pageable);
+        PageList<ProductInput> pageList = productService.findAllByNewest(pageable);
+        return pageList;
+    }
+
+    @RequestMapping(value = "/bestdeal", method = RequestMethod.GET)
+    public PageList<ProductInput> showListProductBestDeal(Pageable pageable, String code) {
+        PageList<ProductInput> pageList = productService.findProductBestDeal(pageable,code);
+        return pageList;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)

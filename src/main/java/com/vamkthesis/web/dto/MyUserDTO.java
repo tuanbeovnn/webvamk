@@ -6,11 +6,12 @@ import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
 
 @Getter
 @Setter
-public class MyUserDTO extends UserDto implements UserDetails, CredentialsContainer {
+public class MyUserDTO extends UserDto implements UserDetails, CredentialsContainer, Principal {
 
     Collection<? extends GrantedAuthority> authorities;
 
@@ -19,7 +20,7 @@ public class MyUserDTO extends UserDto implements UserDetails, CredentialsContai
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override

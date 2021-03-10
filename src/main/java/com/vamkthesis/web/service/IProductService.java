@@ -21,6 +21,7 @@ public interface IProductService {
     ProductOutput findProductByCode(String code);// new
     List<ProductOutput> sortByCategories(String code, Pageable pageable);// new
     PageList<ProductOutput> findProductTrending(Pageable pageable);// new
+    PageList<ProductInput> findProductBestDeal(Pageable pageable, String code);// new
 
 
 }

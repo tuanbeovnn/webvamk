@@ -24,13 +24,8 @@ public class OrderService implements IOrderService {
     private IProductRepository productRepository;
     @Override
     public OrderDto save(OrderDto orderDto) {
-        OrderEntity orderEntity = new OrderEntity();
-        if (orderDto.getId() != null) {
-            OrderEntity old = orderRepository.findById(orderDto.getId()).get();
-            orderEntity = Converter.toModel(orderDto, old.getClass());
-        } else {
-            orderEntity = Converter.toModel(orderDto, OrderEntity.class);
-        }
+
+        OrderEntity orderEntity  = Converter.toModel(orderDto, OrderEntity.class);
         orderEntity = Converter.toModel(orderDto, OrderEntity.class);
         OrderEntity finalOrderEntity = orderEntity;
         List<OrderDetailEntity> orderDetailEntity = orderDto.getOrderdetails().stream().map(e-> {

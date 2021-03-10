@@ -48,10 +48,6 @@ public class ProductService implements IProductService {
     public ProductEntity save(ProductInput productInput) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ProductEntity productEntity = new ProductEntity();
-        if (productInput.getId() != null) {
-            ProductEntity oldProductEntity = productRepository.findById(productInput.getId()).get();
-            productEntity = Converter.toModel(productInput, oldProductEntity.getClass());
-        } else {
             productEntity = Converter.toModel(productInput, ProductEntity.class);
 //            ProductEntity inforDetails = productEntity;
 //            List<MobileEntity> mobileEntities = productInput.getMobileDetails().stream().map(e -> {
@@ -60,7 +56,6 @@ public class ProductService implements IProductService {
 //                return mobileEntity;
 //            }).collect(Collectors.toList());
 //            productEntity.setMobiles(mobileEntities);
-        }
 //        MobileEntity mobileEntity = mobileRepository.findOneByCode(productInput.getProductCode());
 //        productEntity.setMobile(mobileEntity);
         CategoryEntity categoryEntity = iCategoryRepository.findOneByCode(productInput.getCategoryCode());
@@ -202,14 +197,36 @@ public class ProductService implements IProductService {
 
     @Override
     public PageList<ProductOutput> findProductTrending(Pageable pageable) {
-        List<ProductEntity> productEntity = new ArrayList<>();
-        productEntity = productRepository.findAllByTrendding(pageable);
+        List<ProductEntity> productEntity = productRepository.findAllByTrendding(pageable);
         Long count = productRepository.countByProduct();
         List<ProductOutput> results = Converter.toList(productEntity, ProductOutput.class);
         PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
         pageList.setTotal(count);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        return pageList;
+    }
+
+    @Override
+    public PageList<ProductInput> findProductBestDeal(Pageable pageable, String code) {
+        List<ProductEntity> productEntities = new ArrayList<>();
+        if (code == null) {
+            productEntities = productRepository.findAllByBestDeal(pageable);
+            if (productEntities == null) {
+                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
+            }
+        }else {
+            productEntities = productRepository.findAllByCodeBestDeal(pageable,code);
+            if (productEntities == null) {
+                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
+            }
+        }
+        List<ProductInput> results = Converter.toList(productEntities, ProductInput.class);
+        PageList<ProductInput> pageList = new PageList<>();
+        pageList.setList(results);
+        pageList.setSuccess(true);
         pageList.setPageSize(pageable.getPageSize());
         pageList.setCurrentPage(pageable.getPageNumber());
         return pageList;

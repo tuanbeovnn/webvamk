@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,7 +24,7 @@ public class UploadService implements IUploadFileService {
     String UPLOAD_DIR;
 
     @Override
-    public List<String> saveImage(MultipartFile[] files) {
+    public List<String> saveImage(MultipartFile[] files, int scaledWidth, int scaledHeight) {
         List<String> images = new ArrayList<>();
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
@@ -34,12 +35,14 @@ public class UploadService implements IUploadFileService {
                     }
                     String tagFile = file.getOriginalFilename();
                     String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
-                    String name = tagFile.substring(0,tagFile.lastIndexOf("."));
-                    String fullName = name + LocalDateTime.now() + splitTag;
+                    int tagFileSub = tagFile.lastIndexOf(".");
+                    String name = tagFile.substring(0,tagFileSub > 10 ? 10 : tagFileSub);
+                    String fullName = name +  LocalDateTime.now() + splitTag;
                     String filePath = uploadsDir + fullName;
                     File dest = new File(filePath);
                     file.transferTo(dest);
                     images.add(HOST+"/api/images/"+fullName);
+                    UploadService.resize(filePath, scaledWidth, scaledHeight);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -47,6 +50,29 @@ public class UploadService implements IUploadFileService {
             }
         }
         return images;
+    }
+
+    public static void resize(String inputImagePath, int scaledWidth, int scaledHeight)
+            throws IOException {
+        // reads input image
+        File inputFile = new File(inputImagePath);
+        BufferedImage inputImage = ImageIO.read(inputFile);
+
+        // creates output image
+        BufferedImage outputImage = new BufferedImage(scaledWidth,
+                scaledHeight, inputImage.getType());
+
+        // scales the input image to the output image
+        Graphics2D g2d = outputImage.createGraphics();
+        g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
+        g2d.dispose();
+
+        // extracts extension of output file
+        String formatName = inputImagePath.substring(inputImagePath
+                .lastIndexOf(".") + 1);
+
+        // writes to output file
+        ImageIO.write(outputImage, formatName, new File(inputImagePath));
     }
 
 //    @Override

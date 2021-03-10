@@ -62,7 +62,8 @@ public class AuthenticationApi {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity registration(@RequestBody @Valid UserDto userDto) throws MessagingException {
         UserDto dto = userService.save(userDto);
-         return ResponseEntityBuilder.getBuilder().setMessage("Create user successfully").setDetails(dto).build();
+        userService.sendEmailVerify(userDto.getEmail());
+        return ResponseEntityBuilder.getBuilder().setMessage("Create user successfully").setDetails(dto).build();
 
     }
 
@@ -79,7 +80,6 @@ public class AuthenticationApi {
             }catch (Exception e) {
                 throw new EmailOrPasswordNotCorrectException();
             }
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             MyUserDTO myUserDTO = (MyUserDTO) authentication.getPrincipal();
 //            myUserDTO.setRoles();
@@ -152,7 +152,7 @@ public class AuthenticationApi {
             throw new ClientException("Expired");
         }
         userService.verifyAccount(emailDto.getEmail());
-        emailService.sendMail(emailDto.getEmail(),"erify account Successfully","");
+        emailService.sendMail(emailDto.getEmail(),"Verify account Successfully","");
         return ResponseEntityBuilder.getBuilder().setMessage("Your account has been verified successfully").build();
     }
 

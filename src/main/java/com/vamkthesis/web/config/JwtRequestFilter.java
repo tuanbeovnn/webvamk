@@ -52,10 +52,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String req = request.getRequestURI();
 
         final String requestTokenHeader = request.getHeader("Authorization");
-//        if (requestTokenHeader==null req.startsWith("/api/auth/") || req.startsWith("/ws")){
-//            chain.doFilter(request, response);
-//            return;
-//        }
+        if (req.startsWith("/ws")){
+            chain.doFilter(request, response);
+            return;
+        }
 
         String username = null;
         String jwtToken = null;
