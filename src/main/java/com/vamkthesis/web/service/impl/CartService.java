@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.CartDto;
+import com.vamkthesis.web.dto.DetailsDto;
 import com.vamkthesis.web.dto.MyUserDTO;
 import com.vamkthesis.web.entity.CartEntity;
 import com.vamkthesis.web.entity.UserEntity;
@@ -33,9 +34,12 @@ public class CartService implements ICartService {
         String cartInfo = new ObjectMapper().writeValueAsString(cartDto.getCartInfo());
         cartEntity.setCartInfo(cartInfo);
         cartEntity = cartRepository.save(cartEntity);
-        return Converter.toModel(cartEntity, CartDto.class);
+        cartDto = Converter.toModel(cartEntity, CartDto.class);
+        DetailsDto[] dtos = new ObjectMapper().readValue(cartEntity.getCartInfo(),DetailsDto[].class);
+        cartDto.setCartInfo(dtos);
+        return cartDto;
     }
-
+//[{"name":"MAcbook Pro 13", "price":"1", "qty":"10","image":"url"},{"name":"MAcbook Pro 13", "price":"1", "qty":"10","image":"url"}]
     @Override
     public void deleteById(Long id) {
 

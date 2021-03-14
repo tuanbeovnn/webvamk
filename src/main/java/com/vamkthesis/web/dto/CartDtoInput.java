@@ -8,9 +8,9 @@ import java.util.List;
 
 @Setter
 @Getter
-public class CartDto extends AbstractDto {
-//    private String cartInfo;
-    private DetailsDto[] cartInfo;
+public class CartDtoInput extends AbstractDto {
+    private String cartInfo;
+//    private List<DetailsDto> cartInfo = new ArrayList<>();
 
 
 //    @JsonProperty("cartInfo")
