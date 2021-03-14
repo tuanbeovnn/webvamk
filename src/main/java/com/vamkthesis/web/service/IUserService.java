@@ -1,6 +1,7 @@
 package com.vamkthesis.web.service;
 
 
+import com.vamkthesis.web.api.input.ChangeInfoInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
 import com.vamkthesis.web.dto.UserDto;
 
@@ -13,4 +14,5 @@ public interface IUserService {
     void verifyAccount(String email);
     UserUpdateInput updateInfo(UserUpdateInput userUpdateInput);
     void sendEmailVerify(String email) throws MessagingException;
+    boolean changePassword(ChangeInfoInput changeInfoInput);
 }

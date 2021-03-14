@@ -1,6 +1,7 @@
 package com.vamkthesis.web.service.impl;
 
 
+import com.vamkthesis.web.api.input.ChangeInfoInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.MyUserDTO;
@@ -104,6 +105,18 @@ public class UserService implements IUserService {
         String signature = DigestUtils.sha256Hex(resend + expire + secret);
         String message = String.format("<h2>Click a link below to VERIFY your account</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href=' %s/api/auth/verify?email=%s&expire=%d&signature=%s'>Verify Email</a>",account, email,expire, signature);
         emailService.sendMail(resend, "VERIFY ACCOUNT", message);
+    }
+
+    @Override
+    public boolean changePassword(ChangeInfoInput changeInfoInput) {
+        MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
+        if (passwordEncoder.matches(changeInfoInput.getOldPassword(), userEntity.getPassword())) {
+            userEntity.setPassword(passwordEncoder.encode(changeInfoInput.getNewPassword()));
+            userRepository.save(userEntity);
+            return true;
+        }else throw new ClientException("Your old password not correct");
+
     }
 
     @Override

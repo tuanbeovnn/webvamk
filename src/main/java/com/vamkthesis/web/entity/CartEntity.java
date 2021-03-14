@@ -10,10 +10,7 @@ import javax.persistence.*;
 @Setter
 @Table(name = "carts")
 public class CartEntity extends BaseEntity {
-    private String name;
-    private double price;
-    private String image;
-    private int quantity;
+    private String cartInfo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

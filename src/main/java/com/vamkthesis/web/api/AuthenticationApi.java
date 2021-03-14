@@ -1,6 +1,7 @@
 package com.vamkthesis.web.api;
 
 import com.fasterxml.uuid.Generators;
+import com.vamkthesis.web.api.input.ChangeInfoInput;
 import com.vamkthesis.web.api.input.LoginInput;
 import com.vamkthesis.web.api.input.TokenInput;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.impl.GoogleTemplate;
 import org.springframework.social.google.api.userinfo.GoogleUserInfo;
@@ -54,6 +56,8 @@ public class AuthenticationApi {
     private UserRepository userRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -92,6 +96,7 @@ public class AuthenticationApi {
             tokenDTO.setAccessToken(token);
             tokenDTO.setRefreshToken(refreshToken.toString());
 //            tokenDTO.setEnvoke(false);
+
             tokenService.saveToken(tokenDTO);
 //            res.put("token", token);
             return ResponseEntityBuilder.getBuilder().setMessage("Login success").setDetails(tokenDTO).build();
@@ -154,6 +159,39 @@ public class AuthenticationApi {
         userService.verifyAccount(emailDto.getEmail());
         emailService.sendMail(emailDto.getEmail(),"Verify account Successfully","");
         return ResponseEntityBuilder.getBuilder().setMessage("Your account has been verified successfully").build();
+    }
+
+    @RequestMapping(value = "/forgot", method = RequestMethod.GET)
+    public ResponseEntity forgotPassword(@RequestParam String email) throws MessagingException {
+        long expire = System.currentTimeMillis() + 1000 * 60 * 20;
+        String signature = DigestUtils.sha256Hex(email + expire + secret);
+        String message = String.format("<h2>Click a link below to reset your password</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href='http://localhost:8080/api/auth/resetPassword?email=%s&expire=%d&signature=%s'>RESET Email</a>", email, expire, signature);
+        emailService.sendMail(email, "FORGOT PASSWORD", message);
+        return ResponseEntityBuilder.getBuilder().setMessage("Email has been sent already !").build();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
+    public ResponseEntity resetPassword(@Valid @ModelAttribute EmailDto emailDTO) throws MessagingException {
+        if (!DigestUtils.sha256Hex(emailDTO.getEmail() + emailDTO.getExpire() + secret).equals(emailDTO.getSignature()))
+            throw new ClientException("Signature not correct");
+        if (System.currentTimeMillis() > emailDTO.getExpire()) throw new ClientException("Expired");
+        UUID randomPassWord = Generators.randomBasedGenerator(new Random()).generate();
+        UserEntity userEntity = userRepository.findOneByEmail(emailDTO.getEmail());
+        String newPassword = randomPassWord.toString().substring(0, 6);
+        userEntity.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userEntity);
+        emailService.sendMail(emailDTO.getEmail(), "RESET PASSWORD", "Current Password: " + newPassword);
+        return ResponseEntityBuilder.getBuilder().setMessage("Your password has been reset and sent to your email").build();
+    }
+
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+    public ResponseEntity changePassword(@RequestBody ChangeInfoInput changeInfoInput) {
+        if (userService.changePassword(changeInfoInput)) {
+            return ResponseEntityBuilder.getBuilder().setMessage("Your password had been changed successfully").build();
+        } else {
+            return ResponseEntityBuilder.getBuilder().setMessage("Could not change your passoword").build();
+        }
     }
 
 

@@ -34,6 +34,8 @@ public class AuthenticationService implements IAuthenticationService {
         MyUserDTO myUserDto = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserEntity userEntity = userRepository.findById(myUserDto.getId()).get();
         tokenEntity.setUser(userEntity);
+        String secretToken = dto.getAccessToken().substring(dto.getAccessToken().lastIndexOf(".")+1);
+        tokenEntity.setSecretToken(secretToken);
         tokenRepository.save(tokenEntity);
         return true;
     }
@@ -60,7 +62,7 @@ public class AuthenticationService implements IAuthenticationService {
     public boolean logout() {
         MyUserDTO myUserDto = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         TokenEntity tokenEntity = tokenRepository.findOneUserId(myUserDto.getId());
-        tokenEntity.setEnvoke(true);
+        tokenEntity.setEnvoke(1);
         tokenRepository.save(tokenEntity);
         return true;
     }

@@ -11,13 +11,11 @@ import javax.persistence.*;
 @Setter
 @Table(name = "tokens")
 public class TokenEntity extends BaseEntity{
-    @Lob
-    @Column( length = 100000 )
-    private String accessToken;
 
+    private String secretToken;
     private String refreshToken;
     private int expires;
-    private boolean envoke;
+    private int envoke;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

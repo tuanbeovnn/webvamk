@@ -1,9 +1,11 @@
 package com.vamkthesis.web.config;
 
+import com.vamkthesis.web.dto.MyUserDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -24,7 +26,12 @@ public class JpaAuditingConfig {
             if (authentication == null || !authentication.isAuthenticated()) {
                 return null;
             }
-            return Optional.of(authentication.getName());
+            String result = "";
+            if (authentication instanceof UsernamePasswordAuthenticationToken) {
+                MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                result = myUserDTO.getEmail();
+            }
+            return Optional.of(result);
         }
     }
 }

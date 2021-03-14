@@ -5,7 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
 import com.vamkthesis.web.dto.MyUserDTO;
+import com.vamkthesis.web.entity.TokenEntity;
+import com.vamkthesis.web.exception.ClientException;
 import com.vamkthesis.web.exception.CustomException;
+import com.vamkthesis.web.exception.TokenExpiredException;
+import com.vamkthesis.web.repository.ITokenRepository;
 import com.vamkthesis.web.service.IAuthenticationService;
 import com.vamkthesis.web.service.impl.JwtUserService;
 import io.jsonwebtoken.Claims;
@@ -44,6 +48,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     IAuthenticationService authenticationService;
+    @Autowired
+    ITokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -59,16 +65,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwtToken = null;
+        TokenEntity tokenEntity = null;
         logger.info(String.format("%s  %s", request.getMethod(), request.getRequestURI()));
         try {
             if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
                 jwtToken = requestTokenHeader.substring(7);
 
-//                if (jwtTokenUtil.isTokenExpired(jwtToken)) {
-//                    if (!request.getRequestURI().contains("/api/auth"))
-//                        throw new TokenExpiredException();
-//                }
+                if (jwtTokenUtil.isTokenExpired(jwtToken)) {
+                    if (!request.getRequestURI().contains("/api/auth"))
+                        throw new TokenExpiredException();
+                }
+                String secretToken = jwtToken.substring(jwtToken.lastIndexOf(".")+1);
+                tokenEntity = tokenRepository.findOneBySecret(secretToken);
 
+                if (tokenEntity.getEnvoke() == 1 ){
+                    throw new ClientException("your Token was expired");
+                }
 //                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
                 Claims claims = jwtTokenUtil.getAllClaimsFromToken(jwtToken);
