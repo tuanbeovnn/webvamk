@@ -1,20 +1,19 @@
 package com.vamkthesis.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 @Setter
 @Getter
 public class CartDto extends AbstractDto {
-//    private String cartInfo;
-    private List<DetailsDto> cartInfo = new ArrayList<>();
+    private String cartInfo;
+//    private List<DetailsDto> cartInfo = new ArrayList<>();
 
 
-//    @JsonProperty("cartInfo")
-//    public String[] getCartInfo() {
-//        return StringUtils.isEmpty(cartInfo) ? new String[]{} : cartInfo.split(";");
-//    }
+    @JsonProperty("cartInfo")
+    public String[] getCartInfo() {
+        return StringUtils.isEmpty(cartInfo) ? new String[]{} : cartInfo.split(";");
+    }
 }

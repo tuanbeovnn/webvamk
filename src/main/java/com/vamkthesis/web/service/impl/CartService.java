@@ -1,7 +1,6 @@
 package com.vamkthesis.web.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vamkthesis.web.api.output.CartOutput;
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.CartDto;
 import com.vamkthesis.web.dto.MyUserDTO;
@@ -25,14 +24,14 @@ public class CartService implements ICartService {
 
 
     @Override
-    public CartDto save(CartDto cartDto) throws JsonProcessingException {
+    public CartDto save(CartOutput cartDto) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();// lay thong tin user
         UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
         CartEntity cartEntity = Converter.toModel(cartDto,CartEntity.class);
         cartEntity.setUser(userEntity);
-        String cartInfo = new ObjectMapper().writeValueAsString(cartDto.getCartInfo());
-        cartEntity.setCartInfo(cartInfo);
-        cartEntity = cartRepository.save(cartEntity);
+//        String cartInfo = String.join(";", cartDto.getCartInfo());
+//        cartEntity.setCartInfo(cartInfo);
+//        cartEntity = cartRepository.save(cartEntity);
         return Converter.toModel(cartEntity, CartDto.class);
     }
 

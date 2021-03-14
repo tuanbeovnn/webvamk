@@ -1,13 +1,13 @@
 package com.vamkthesis.web.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vamkthesis.web.api.output.CartOutput;
 import com.vamkthesis.web.dto.CartDto;
 
 import java.util.List;
 
 public interface ICartService {
-    CartDto save(CartDto cartDto) throws JsonProcessingException;
+    CartDto save(CartOutput cartOutput);
     void deleteById(Long id);
     List<CartDto> findAll();
     List<CartDto> findAllCartByUser(Long id);
