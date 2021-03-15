@@ -19,7 +19,9 @@ public class OrderEntity extends BaseEntity {
     private String email;
     private String address;
     private String country;
+    private String state;
     private String city;
+    private Long zipCode;
     private double discount;
     private double shippingFee;
     private double total;
@@ -39,4 +41,26 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderDetailEntity> details = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "OrderEntity{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", discount=" + discount +
+                ", shippingFee=" + shippingFee +
+                ", total=" + total +
+                ", tax=" + tax +
+                ", status=" + status +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", user=" + user +
+                ", trans=" + trans +
+                ", details=" + details +
+                '}';
+    }
 }

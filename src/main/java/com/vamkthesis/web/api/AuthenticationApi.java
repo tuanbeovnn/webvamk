@@ -6,6 +6,7 @@ import com.vamkthesis.web.api.input.LoginInput;
 import com.vamkthesis.web.api.input.TokenInput;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
 import com.vamkthesis.web.config.JwtTokenUtil;
+import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.*;
 import com.vamkthesis.web.entity.UserEntity;
 import com.vamkthesis.web.exception.ClientException;
@@ -16,6 +17,7 @@ import com.vamkthesis.web.service.IUserService;
 import com.vamkthesis.web.service.impl.AuthenticationService;
 import com.vamkthesis.web.service.impl.EmailService;
 import com.vamkthesis.web.service.impl.JwtUserService;
+import com.vamkthesis.web.service.impl.UploadService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -23,9 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.User;
+import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.impl.GoogleTemplate;
 import org.springframework.social.google.api.userinfo.GoogleUserInfo;
@@ -58,6 +64,8 @@ public class AuthenticationApi {
     private EmailService emailService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UploadService uploadService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -136,6 +144,43 @@ public class AuthenticationApi {
         return ResponseEntity.status(200).body(tokenDTO);
     }
 
+    @RequestMapping(value = "/facebook/login", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "true : success, false: failed"),
+    })
+    public ResponseEntity loginFacebook(@RequestBody TokenInput tokenInput) {
+
+        Facebook facebook = new FacebookTemplate(tokenInput.getAccessToken());
+        String[] fields = {"id", "email", "name", "gender"};
+        User userProfile = facebook.fetchObject("me", User.class, fields);
+        UserEntity userEntity = userRepository.findOneByEmail(userProfile.getEmail());
+        if (userEntity == null) {
+            UserEntity userEntity1 = Converter.toModel(userProfile, UserEntity.class);
+            String username = userProfile.getEmail().substring(0, userProfile.getEmail().indexOf("@")) + "_"
+                    + UUID.randomUUID().toString().substring(0, 3);
+            userEntity1.setUsername(username);
+            byte[] imageBytes = facebook.userOperations().getUserProfileImage();
+//            String avatar = uploadService.saveImage(imageBytes, UUID.randomUUID().toString() + ".jpg");
+//            String avatar = amazonClient.uploadFileFb(UUID.randomUUID().toString() + ".jpg", imageBytes);
+//            userEntity1.setAvatar(avatar);
+            userRepository.save(userEntity1);
+        }
+        Authentication auth = new UsernamePasswordAuthenticationToken("", "");
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        MyUserDTO myUserDTO = (MyUserDTO) jwtUserService.loadUserByUsername(userProfile.getEmail());
+        auth = new UsernamePasswordAuthenticationToken(myUserDTO, "");
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        final String token = tokenProvider.generateToken(myUserDTO);
+        UUID refreshToken = Generators.randomBasedGenerator(new Random()).generate();
+        TokenDto tokenDTO = new TokenDto();
+        tokenDTO.setRefreshToken(refreshToken.toString());
+        tokenDTO.setAccessToken(token);
+        tokenService.saveToken(tokenDTO);
+        return ResponseEntity.status(200).body(tokenDTO);
+    }
+
+
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "true : success, false: failed"),
@@ -165,7 +210,7 @@ public class AuthenticationApi {
     public ResponseEntity forgotPassword(@RequestParam String email) throws MessagingException {
         long expire = System.currentTimeMillis() + 1000 * 60 * 20;
         String signature = DigestUtils.sha256Hex(email + expire + secret);
-        String message = String.format("<h2>Click a link below to reset your password</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href='http://localhost:8080/api/auth/resetPassword?email=%s&expire=%d&signature=%s'>RESET Email</a>", email, expire, signature);
+        String message = String.format("<h2>Click a link below to reset your password</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href='http://saunakovaasa.ml:8080/api/auth/resetPassword?email=%s&expire=%d&signature=%s'>RESET Email</a>", email, expire, signature);
         emailService.sendMail(email, "FORGOT PASSWORD", message);
         return ResponseEntityBuilder.getBuilder().setMessage("Email has been sent already !").build();
     }
@@ -193,6 +238,4 @@ public class AuthenticationApi {
             return ResponseEntityBuilder.getBuilder().setMessage("Could not change your passoword").build();
         }
     }
-
-
 }

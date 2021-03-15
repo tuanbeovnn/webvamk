@@ -8,12 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 @Getter
 public class CartDto extends AbstractDto {
-    private String cartInfo;
-//    private List<DetailsDto> cartInfo = new ArrayList<>();
+//    private String cartInfo;
+    private DetailsDto[] cartInfo;
 
-
-    @JsonProperty("cartInfo")
-    public String[] getCartInfo() {
-        return StringUtils.isEmpty(cartInfo) ? new String[]{} : cartInfo.split(";");
-    }
+//
+//    @JsonProperty("cartInfo")
+//    public String[] getCartInfo() {
+//        return StringUtils.isEmpty(cartInfo) ? new String[]{} : cartInfo.split(";");
+//    }
 }

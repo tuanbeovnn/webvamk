@@ -2,14 +2,18 @@ package com.vamkthesis.web.service.impl;
 
 
 import com.vamkthesis.web.convert.Converter;
+import com.vamkthesis.web.dto.MyUserDTO;
 import com.vamkthesis.web.dto.OrderDto;
 import com.vamkthesis.web.entity.OrderDetailEntity;
 import com.vamkthesis.web.entity.OrderEntity;
 import com.vamkthesis.web.entity.ProductEntity;
+import com.vamkthesis.web.entity.UserEntity;
 import com.vamkthesis.web.repository.IOrderRepository;
 import com.vamkthesis.web.repository.IProductRepository;
+import com.vamkthesis.web.repository.UserRepository;
 import com.vamkthesis.web.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,13 +26,15 @@ public class OrderService implements IOrderService {
     private IOrderRepository orderRepository;
     @Autowired
     private IProductRepository productRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public OrderDto save(OrderDto orderDto) {
-
-        OrderEntity orderEntity  = Converter.toModel(orderDto, OrderEntity.class);
-        orderEntity = Converter.toModel(orderDto, OrderEntity.class);
+//        OrderEntity orderEntity  = Converter.toModel(orderDto, OrderEntity.class);
+        MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        OrderEntity orderEntity = Converter.toModel(orderDto, OrderEntity.class);
         OrderEntity finalOrderEntity = orderEntity;
-        List<OrderDetailEntity> orderDetailEntity = orderDto.getOrderdetails().stream().map(e-> {
+        List<OrderDetailEntity> orderDetailEntity = orderDto.getDetails().stream().map(e-> {
              OrderDetailEntity orderDetailEntity1 = new OrderDetailEntity();
             ProductEntity productEntity = productRepository.findById(e.getProductId()).get();
             productEntity.setQuantity(productEntity.getQuantity() - e.getQuantity());
@@ -39,6 +45,8 @@ public class OrderService implements IOrderService {
             return orderDetailEntity1;
         }).collect(Collectors.toList());
         orderEntity.setDetails(orderDetailEntity);
+        UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
+        orderEntity.setUser(userEntity);
         orderEntity = orderRepository.save(orderEntity);
         OrderDto orderDto1 = Converter.toModel(orderEntity,OrderDto.class);
         return orderDto1;

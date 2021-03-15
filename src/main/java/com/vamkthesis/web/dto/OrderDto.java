@@ -16,12 +16,15 @@ public class OrderDto extends AbstractDto {
     private String email;
     private String address;
     private String country;
+    private String state;
     private String city;
+    private Long zipCode;
     private double discount;
     private double shippingFee;
-    private double total;
+//    private double total;
     private double tax;
     private int status;
-    private double price;
-    private List<OrderDetailsDto> orderdetails = new ArrayList<>();
+//    private double price;
+//    private double quantity;
+    private List<OrderDetailsDto> details = new ArrayList<>();
 }

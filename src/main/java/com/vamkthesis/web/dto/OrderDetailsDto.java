@@ -10,4 +10,10 @@ import lombok.Setter;
 public class OrderDetailsDto extends BaseEntity {
     private Long productId;
     private Integer quantity;
+    private String name;
+    private double total;
+    private double price;
+
+//    private double shippingFee;
+
 }

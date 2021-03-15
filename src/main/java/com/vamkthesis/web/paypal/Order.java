@@ -1,16 +1,13 @@
 package com.vamkthesis.web.paypal;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
 public class Order {
-
+	private Long id;
+	private String email;
 	private double price;
 	private String currency;
 	private String method;

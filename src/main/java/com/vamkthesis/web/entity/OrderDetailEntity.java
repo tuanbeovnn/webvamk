@@ -10,11 +10,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "orderdetails")
 public class OrderDetailEntity extends BaseEntity {
-
     private int quantity;
-
-
-
+    private String name;
+    private double total;
+    private double price;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
