@@ -42,7 +42,7 @@ public class ProductEntity extends BaseEntity {
     private List<RatingEntity> ratings = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product")
     private List<OrderDetailEntity> details = new ArrayList<>();
 
 //    @JsonIgnore

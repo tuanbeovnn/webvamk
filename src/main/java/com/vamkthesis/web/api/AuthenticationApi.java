@@ -160,9 +160,9 @@ public class AuthenticationApi {
                     + UUID.randomUUID().toString().substring(0, 3);
             userEntity1.setUsername(username);
             byte[] imageBytes = facebook.userOperations().getUserProfileImage();
-//            String avatar = uploadService.saveImage(imageBytes, UUID.randomUUID().toString() + ".jpg");
+            String avatar = uploadService.saveImage(imageBytes, UUID.randomUUID().toString() + ".jpg");
 //            String avatar = amazonClient.uploadFileFb(UUID.randomUUID().toString() + ".jpg", imageBytes);
-//            userEntity1.setAvatar(avatar);
+            userEntity1.setAvatar(avatar);
             userRepository.save(userEntity1);
         }
         Authentication auth = new UsernamePasswordAuthenticationToken("", "");

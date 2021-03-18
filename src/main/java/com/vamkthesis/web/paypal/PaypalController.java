@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.UUID;
 
 @RestController
 public class PaypalController {
@@ -63,7 +64,9 @@ public class PaypalController {
 	            if (payment.getState().equals("approved")) {
 					OrderEntity orderEntity = orderRepository.findById(orderId).get();
 					orderEntity.setStatus(1);
+					orderEntity.setCodeOrder(UUID.randomUUID().toString());
 					orderEntity = orderRepository.save(orderEntity);
+
 	            	emailService.sendMail(orderEntity.getEmail(),"Your Order", "Your Order Info" + orderEntity.toString());
 	                return "success";
 	            }

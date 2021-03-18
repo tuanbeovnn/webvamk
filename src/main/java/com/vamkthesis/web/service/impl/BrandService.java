@@ -8,28 +8,33 @@ import com.vamkthesis.web.exception.EmailExistsException;
 import com.vamkthesis.web.repository.IBrandRepository;
 import com.vamkthesis.web.service.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BrandService implements IBrandService {
 
     @Autowired
     private IBrandRepository brandRepository;
-    
+
     @Override
     public BrandDto save(BrandDto brandDto) {
         BrandEntity brandEntity = new BrandEntity();
-        if (brandDto.getId() != null){
-            BrandEntity oldBrand = brandRepository.findById(brandDto.getId()).get();
-            brandEntity = Converter.toModel(brandDto, oldBrand.getClass());
-        }else {
-            brandEntity = Converter.toModel(brandDto,BrandEntity.class);
-            BrandEntity brandEntity1 = brandRepository.findOneByCode(brandDto.getCode());
-            if (brandEntity1 != null){
-                throw new EmailExistsException("Brand Code already exits");
-            }
+        brandEntity = Converter.toModel(brandDto, BrandEntity.class);
+        BrandEntity brandEntity1 = brandRepository.findOneByCode(brandDto.getCode());
+        if (brandEntity1 != null) {
+            throw new EmailExistsException("Brand Code already exits");
         }
         brandEntity = brandRepository.save(brandEntity);
         return Converter.toModel(brandEntity, BrandDto.class);
+    }
+
+    @Override
+    public List<BrandDto> findAll(Pageable pageable) {
+        List<BrandEntity> brandEntity = brandRepository.findAll(pageable).getContent();
+        List<BrandDto> brandDto = Converter.toList(brandEntity,BrandDto.class);
+        return brandDto;
     }
 }

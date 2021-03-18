@@ -8,6 +8,7 @@ import lombok.Setter;
 public class BrandDto extends AbstractDto {
     private String name;
     private String code;
+    private String image;
 
 
 }

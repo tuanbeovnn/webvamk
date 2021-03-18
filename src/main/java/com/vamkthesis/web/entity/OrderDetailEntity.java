@@ -14,6 +14,7 @@ public class OrderDetailEntity extends BaseEntity {
     private String name;
     private double total;
     private double price;
+    private String image;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;

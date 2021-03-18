@@ -2,6 +2,7 @@ package com.vamkthesis.web.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "orders")
+@ToString
 public class OrderEntity extends BaseEntity {
 
     private String firstName;
@@ -29,6 +31,7 @@ public class OrderEntity extends BaseEntity {
     private int status;
     private double price;
     private double quantity;
+    private String codeOrder;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,29 +41,8 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<TransactionEntity> trans = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<OrderDetailEntity> details = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "OrderEntity{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", discount=" + discount +
-                ", shippingFee=" + shippingFee +
-                ", total=" + total +
-                ", tax=" + tax +
-                ", status=" + status +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", user=" + user +
-                ", trans=" + trans +
-                ", details=" + details +
-                '}';
-    }
+
 }

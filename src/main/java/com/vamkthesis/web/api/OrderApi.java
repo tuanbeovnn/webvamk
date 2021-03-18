@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/order")
 public class OrderApi {
@@ -16,7 +18,7 @@ public class OrderApi {
     private IOrderService orderService;
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public OrderDto save(@RequestBody OrderDto orderDto) {
+    public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
         return orderService.save(orderDto);
     }
 }

@@ -1,6 +1,7 @@
 package com.vamkthesis.web.service.impl;
 
 
+import com.vamkthesis.web.exception.ServerException;
 import com.vamkthesis.web.service.IUploadFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -75,29 +78,29 @@ public class UploadService implements IUploadFileService {
         ImageIO.write(outputImage, formatName, new File(inputImagePath));
     }
 
-//    @Override
-//    public String saveImage(String imageBase64, String imageName) {
-//        byte[] imageByte= Base64.getDecoder().decode(imageBase64);
-//        return saveImage(imageByte,imageName);
-//    }
-//
-//    public String saveImage(byte[] imageByte, String imageName) {
-//        try {
-//            String uploadsDir = UPLOAD_DIR;
-//            if (!new File(uploadsDir).exists()) {
-//                new File(uploadsDir).mkdir();
-//            }
-//            String tagFile = imageName;
-//            String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
-//            String name = tagFile.substring(0,tagFile.lastIndexOf("."));
-//            String fullName = name + LocalDateTime.now() + splitTag;
-//            new FileOutputStream(uploadsDir + fullName).write(imageByte);
-//            return HOST+"/upload/"+fullName;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new ServerException("Cannot save image");
-//        }
-//    }
+    @Override
+    public String saveImage(String imageBase64, String imageName) {
+        byte[] imageByte= Base64.getDecoder().decode(imageBase64);
+        return saveImage(imageByte,imageName);
+    }
+
+    public String saveImage(byte[] imageByte, String imageName) {
+        try {
+            String uploadsDir = UPLOAD_DIR;
+            if (!new File(uploadsDir).exists()) {
+                new File(uploadsDir).mkdir();
+            }
+            String tagFile = imageName;
+            String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
+            String name = tagFile.substring(0,tagFile.lastIndexOf("."));
+            String fullName = name + LocalDateTime.now() + splitTag;
+            new FileOutputStream(uploadsDir + fullName).write(imageByte);
+            return HOST+"/upload/"+fullName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServerException("Cannot save image");
+        }
+    }
 
 
 

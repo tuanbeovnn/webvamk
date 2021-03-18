@@ -13,6 +13,7 @@ public class OrderDetailsDto extends BaseEntity {
     private String name;
     private double total;
     private double price;
+    private String image;
 
 //    private double shippingFee;
 

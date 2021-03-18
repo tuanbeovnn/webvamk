@@ -8,6 +8,8 @@ import com.vamkthesis.web.entity.OrderDetailEntity;
 import com.vamkthesis.web.entity.OrderEntity;
 import com.vamkthesis.web.entity.ProductEntity;
 import com.vamkthesis.web.entity.UserEntity;
+import com.vamkthesis.web.exception.ClientException;
+import com.vamkthesis.web.repository.IOrderDetailsRepository;
 import com.vamkthesis.web.repository.IOrderRepository;
 import com.vamkthesis.web.repository.IProductRepository;
 import com.vamkthesis.web.repository.UserRepository;
@@ -28,6 +30,8 @@ public class OrderService implements IOrderService {
     private IProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private IOrderDetailsRepository orderDetailsRepository;
     @Override
     public OrderDto save(OrderDto orderDto) {
 //        OrderEntity orderEntity  = Converter.toModel(orderDto, OrderEntity.class);
@@ -37,10 +41,18 @@ public class OrderService implements IOrderService {
         List<OrderDetailEntity> orderDetailEntity = orderDto.getDetails().stream().map(e-> {
              OrderDetailEntity orderDetailEntity1 = new OrderDetailEntity();
             ProductEntity productEntity = productRepository.findById(e.getProductId()).get();
+            if (e.getQuantity() > productEntity.getQuantity()){
+                throw new ClientException("We only have " + productEntity.getQuantity());
+            }
             productEntity.setQuantity(productEntity.getQuantity() - e.getQuantity());
             orderDetailEntity1.setProduct(productEntity);
             orderDetailEntity1.setQuantity(e.getQuantity());
             orderDetailEntity1.setOrder(finalOrderEntity);
+            orderDetailEntity1.setImage(productEntity.getImage());
+            orderDetailEntity1.setName(productEntity.getName());
+            orderDetailEntity1.setPrice(productEntity.getPrice());
+            orderDetailEntity1.setTotal(productEntity.getPrice() * e.getQuantity());
+//            orderDetailEntity1 = orderDetailsRepository.save(orderDetailEntity1);
             productEntity = productRepository.save(productEntity);
             return orderDetailEntity1;
         }).collect(Collectors.toList());
