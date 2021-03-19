@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,6 @@ public class ProductEntity extends BaseEntity {
     private String image;
     private String description;
     private String status;
-    private String brandCode;
     private String code;
     private Integer quantity;
     @NotNull
@@ -30,6 +30,8 @@ public class ProductEntity extends BaseEntity {
     private double discount = 0;
     private String technicalInfo;
     private double rating;
+    private Date startTime;
+    private Date endTime;
 
 
     @JsonIgnore

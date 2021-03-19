@@ -2,31 +2,37 @@ package com.vamkthesis.web.repository.impl;
 
 
 import com.vamkthesis.web.builder.ProductSearchBuilder;
-import com.vamkthesis.web.entity.ProductEntity;
+import com.vamkthesis.web.entity.DiscountEntity;
 import com.vamkthesis.web.helper.MapToSqlSearch;
 import com.vamkthesis.web.helper.ObjectToMap;
-import com.vamkthesis.web.repository.ProductRepositoryCustom;
-import org.springframework.data.domain.Pageable;
+import com.vamkthesis.web.repository.IProductRepositoryCustom;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
 import java.util.Map;
 
-public class ProductRepositoryImpl implements ProductRepositoryCustom {
+public class IProductRepositoryImpl implements IProductRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
-    @Override
-    public List<ProductEntity> findAll(ProductSearchBuilder fieldSearch, Pageable pageable) {
+//    @Override
+//    public List<ProductEntity> findAll(ProductSearchBuilder fieldSearch, Pageable pageable) {
+//
+//        String sql = "select p from ProductEntity p WHERE 1=1" + buildQuery(fieldSearch, "p");
+//        Query query = em.createQuery(sql);
+//        query.setFirstResult((pageable.getPageNumber()-1)*pageable.getPageSize());
+//        query.setMaxResults(pageable.getPageSize());
+//        List<ProductEntity> results = (List<ProductEntity>) query.getResultList();
+//        return results;
+//    }
 
-        String sql = "select p from ProductEntity p WHERE 1=1" + buildQuery(fieldSearch, "p");
-        Query query = em.createQuery(sql);
-        query.setFirstResult((pageable.getPageNumber()-1)*pageable.getPageSize());
-        query.setMaxResults(pageable.getPageSize());
-        List<ProductEntity> results = (List<ProductEntity>) query.getResultList();
-        return results;
+    @Override
+    public DiscountEntity abc() {
+        String sql = "SELECT products.*,UNIX_TIMESTAMP(products.end_time) - UNIX_TIMESTAMP( products.start_time) as time_end FROM products WHERE products.discount = (SELECT MAX(products.discount) FROM products) and products.end_time > now() order by time_end DESC limit 0,1";
+        Query query = em.createNativeQuery(sql, DiscountEntity.class);
+        DiscountEntity discountEntity = (DiscountEntity) query.getSingleResult();
+        return discountEntity;
     }
 
     private String buildQuery(ProductSearchBuilder fieldSearch, String prefix) {

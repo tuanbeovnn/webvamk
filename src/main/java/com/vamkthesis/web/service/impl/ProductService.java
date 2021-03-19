@@ -2,13 +2,12 @@ package com.vamkthesis.web.service.impl;
 
 
 import com.vamkthesis.web.api.input.ProductInput;
+import com.vamkthesis.web.api.input.ProductUpdateInput;
 import com.vamkthesis.web.api.output.ProductOutput;
 import com.vamkthesis.web.convert.Converter;
+import com.vamkthesis.web.dto.DiscountDto;
 import com.vamkthesis.web.dto.MyUserDTO;
-import com.vamkthesis.web.entity.BrandEntity;
-import com.vamkthesis.web.entity.CategoryEntity;
-import com.vamkthesis.web.entity.ProductEntity;
-import com.vamkthesis.web.entity.UserEntity;
+import com.vamkthesis.web.entity.*;
 import com.vamkthesis.web.exception.ClientException;
 import com.vamkthesis.web.paging.PageList;
 import com.vamkthesis.web.repository.*;
@@ -43,21 +42,13 @@ public class ProductService implements IProductService {
 //    private IMobileRepository mobileRepository;
 
 
+
     @Secured("ADMIN")
     @Override
     public ProductEntity save(ProductInput productInput) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ProductEntity productEntity = new ProductEntity();
             productEntity = Converter.toModel(productInput, ProductEntity.class);
-//            ProductEntity inforDetails = productEntity;
-//            List<MobileEntity> mobileEntities = productInput.getMobileDetails().stream().map(e -> {
-//                MobileEntity mobileEntity = Converter.toModel(e, MobileEntity.class);
-//                mobileEntity.setProduct(inforDetails);
-//                return mobileEntity;
-//            }).collect(Collectors.toList());
-//            productEntity.setMobiles(mobileEntities);
-//        MobileEntity mobileEntity = mobileRepository.findOneByCode(productInput.getProductCode());
-//        productEntity.setMobile(mobileEntity);
         CategoryEntity categoryEntity = iCategoryRepository.findOneByCode(productInput.getCategoryCode());
         productEntity.setCategory(categoryEntity);
         BrandEntity brandEntity = brandRepository.findOneByCode(productInput.getBrandCode());
@@ -70,6 +61,43 @@ public class ProductService implements IProductService {
         productEntity.setUser(userEntity);
         productEntity = productRepository.save(productEntity);
         return productEntity;
+    }
+
+    @Override
+    public ProductOutput updateInfo(ProductUpdateInput productUpdateInput) {
+        MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
+        ProductEntity productEntity = productRepository.findById(productUpdateInput.getId()).get();
+        if (productEntity == null) {
+            throw new ClientException("Coud not find this product");
+        }
+        productEntity.setName(productUpdateInput.getName());
+        String image = String.join(";", productUpdateInput.getImage());
+        productEntity.setImage(image);
+        productEntity.setDescription(productUpdateInput.getDescription());
+        productEntity.setCode(productUpdateInput.getCode());
+        productEntity.setQuantity(productUpdateInput.getQuantity());
+        productEntity.setDiscount(productUpdateInput.getDiscount());
+        productEntity.setOriginalPrice(productUpdateInput.getOriginalPrice());
+        productEntity.setPrice((productUpdateInput.getOriginalPrice() * (100 - productUpdateInput.getDiscount()) / 100));
+        productEntity.setTechnicalInfo(productUpdateInput.getTechnicalInfo());
+        productEntity.setRating(productUpdateInput.getRating());
+        productEntity.setStartTime(productUpdateInput.getStartTime());
+        productEntity.setEndTime(productUpdateInput.getEndTime());
+        productEntity.setUser(userEntity);
+        productEntity = productRepository.save(productEntity);
+        Long middleTime = (productUpdateInput.getEndTime().getTime()- productUpdateInput.getStartTime().getTime())/1000;
+
+        ProductOutput productOutput = Converter.toModel(productEntity, ProductOutput.class);
+        productOutput.setTimeEnd(middleTime);
+        return productOutput;
+    }
+
+    @Override
+    public DiscountDto abc() {
+       DiscountEntity productEntities = productRepository.abc();
+       DiscountDto results = Converter.toModel(productEntities, DiscountDto.class);
+        return results;
     }
 
     @Override
@@ -157,11 +185,11 @@ public class ProductService implements IProductService {
 //    }
 
     @Override
-    public PageList<ProductInput> findAllByNewest(Pageable pageable) {
+    public PageList<ProductOutput> findAllByNewest(Pageable pageable) {
         List<ProductEntity> productEntities = productRepository.findAllByNewest(pageable);
         Long count = productRepository.countByProduct();
-        List<ProductInput> results = Converter.toList(productEntities, ProductInput.class);
-        PageList<ProductInput> pageList = new PageList<>();
+        List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
+        PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
         pageList.setTotal(count);
@@ -210,7 +238,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PageList<ProductInput> findProductBestDeal(Pageable pageable, String code) {
+    public PageList<ProductOutput> findProductBestDeal(Pageable pageable, String code) {
         List<ProductEntity> productEntities = new ArrayList<>();
         if (code == null) {
             productEntities = productRepository.findAllByBestDeal(pageable);
@@ -223,14 +251,16 @@ public class ProductService implements IProductService {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
             }
         }
-        List<ProductInput> results = Converter.toList(productEntities, ProductInput.class);
-        PageList<ProductInput> pageList = new PageList<>();
+        List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
+        PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
         pageList.setPageSize(pageable.getPageSize());
         pageList.setCurrentPage(pageable.getPageNumber());
         return pageList;
     }
+
+
 
 
 }

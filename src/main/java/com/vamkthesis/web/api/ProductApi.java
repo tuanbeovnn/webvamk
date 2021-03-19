@@ -2,8 +2,11 @@ package com.vamkthesis.web.api;
 
 
 import com.vamkthesis.web.api.input.ProductInput;
+import com.vamkthesis.web.api.input.ProductUpdateInput;
 import com.vamkthesis.web.api.input.RatingInput;
 import com.vamkthesis.web.api.output.ProductOutput;
+import com.vamkthesis.web.api.output.ResponseEntityBuilder;
+import com.vamkthesis.web.dto.DiscountDto;
 import com.vamkthesis.web.entity.ProductEntity;
 import com.vamkthesis.web.entity.RatingEntity;
 import com.vamkthesis.web.paging.PageList;
@@ -11,6 +14,7 @@ import com.vamkthesis.web.service.IProductService;
 import com.vamkthesis.web.service.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +31,11 @@ public class ProductApi {
     @Autowired
     private IRatingService ratingService;
 
-
-    @PutMapping(value = "/{id}")
-    public ProductEntity updateProduct(@RequestBody ProductInput productDto, @PathVariable("id") long id) {
-        productDto.setId(id);
-        return productService.save(productDto);
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity updateProduct(@RequestBody ProductUpdateInput productUpdateInput, @PathVariable("id") long id) {
+        productUpdateInput.setId(id);
+        ProductOutput productOutput = productService.updateInfo(productUpdateInput);
+        return ResponseEntityBuilder.getBuilder().setMessage("Update product successfully").setDetails(productOutput).build();
     }
 
     @RequestMapping(value = "/{code}", method = RequestMethod.GET)
@@ -75,14 +79,14 @@ public class ProductApi {
 //    }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public PageList<ProductInput> showListProductCategory(Pageable pageable) {
-        PageList<ProductInput> pageList = productService.findAllByNewest(pageable);
+    public PageList<ProductOutput> showListProductCategory(Pageable pageable) {
+        PageList<ProductOutput> pageList = productService.findAllByNewest(pageable);
         return pageList;
     }
 
     @RequestMapping(value = "/bestdeal", method = RequestMethod.GET)
-    public PageList<ProductInput> showListProductBestDeal(Pageable pageable, String code) {
-        PageList<ProductInput> pageList = productService.findProductBestDeal(pageable,code);
+    public PageList<ProductOutput> showListProductBestDeal(Pageable pageable, String code) {
+        PageList<ProductOutput> pageList = productService.findProductBestDeal(pageable,code);
         return pageList;
     }
 
@@ -97,6 +101,14 @@ public class ProductApi {
         PageList<ProductOutput> outputPageList = productService.findProductTrending(pageable);
         return outputPageList;
     }
+
+    @RequestMapping(value = "/bigdeal", method = RequestMethod.GET)
+    public DiscountDto showListBigDeal() {
+        DiscountDto pageList = productService.abc();
+        return pageList;
+    }
+
+
 
 //    @RequestMapping(value = "/searchByCategory", method = RequestMethod.GET)
 //    public List<ProductInput> listSearch(@RequestBody ProductInput input) {
