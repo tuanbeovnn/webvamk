@@ -10,6 +10,7 @@ public class MessageDto {
     private String id;
     private String content;
     private String roomNumber;
+    private Long idUser;
 
 
 

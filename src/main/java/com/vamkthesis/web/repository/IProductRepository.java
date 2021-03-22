@@ -35,11 +35,14 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long>, 
     @Query(value = "SELECT COUNT(*) FROM products", nativeQuery = true)
     Long countByProduct();
 
+    @Query(value = "SELECT COUNT(*) FROM products inner join categories on categories.id = products.category_id where categories.code like ?1", nativeQuery = true)
+    Long countByProductCode(String code);// new
+
     @Query(value = "select * from products where products.name like %?%", nativeQuery = true)
     List<ProductEntity> searchProductByName(String name, Pageable pageable);
 
-    @Query(value = "SELECT * FROM products p inner join categories c on c.id = p.category_id WHERE c.code like ?1 AND p.name like '%?2%'",nativeQuery = true)
-    List<ProductEntity> searchProductByCategory(String name, String code, Pageable pageable);
+    @Query(value = "SELECT * FROM products inner join categories on categories.id = products.category_id WHERE products.name like %?1% and categories.code like ?2",nativeQuery = true)
+    List<ProductEntity> searchProductNameByCategory(String name, String code, Pageable pageable);
 
     @Query(value = "SELECT * FROM products p inner join categories c on c.id = p.category_id WHERE c.code like ?",nativeQuery = true)
     List<ProductEntity> sortByCategories(String code, Pageable pageable);

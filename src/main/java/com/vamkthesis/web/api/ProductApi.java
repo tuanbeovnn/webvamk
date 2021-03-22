@@ -44,7 +44,7 @@ public class ProductApi {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public PageList<ProductOutput> findProductByName(String name, String code, Pageable pageable) {
+    public PageList<ProductOutput> findProductByName(@RequestParam String name, String code, Pageable pageable) {
         PageList<ProductOutput> pageList = productService.searchByCategory(name, code, pageable);
         return pageList;
     }

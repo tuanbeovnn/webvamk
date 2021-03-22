@@ -6,13 +6,13 @@ import com.vamkthesis.web.api.socket.handler.MessageBuilder;
 import com.vamkthesis.web.dto.MessageDto;
 import com.vamkthesis.web.service.impl.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/message")
@@ -27,5 +27,11 @@ public class MessageApi {
         GenericMessage<byte[]> genericMessage = MessageBuilder.getBuilder().set("data",messageDto).build();
         template.send(String.format("/topic/%s", messageDto.getRoomNumber()), genericMessage);
         return ResponseEntityBuilder.getBuilder().setMessage("Save message successfully").build();
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public List<MessageDto> getListNewest(@RequestParam String room, Pageable pageable) {
+        List<MessageDto> messageDtos = messageService.findAllByNewest(room, pageable);
+        return messageDtos;
     }
 }

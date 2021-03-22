@@ -10,6 +10,6 @@ import javax.persistence.Entity;
 @Entity
 public class MessageEntity extends BaseEntity  {
     private String content;
-
     private String roomNumber;
+    private Long idUser;
 }

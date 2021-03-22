@@ -110,20 +110,22 @@ public class ProductService implements IProductService {
     @Override
     public PageList<ProductOutput> findAllByCategory(String code, Pageable pageable) {
         List<ProductEntity> productEntities = new ArrayList<>();
+        PageList<ProductOutput> pageList = new PageList<>();
         if (code == null){
             productEntities = productRepository.findAllByProduct(pageable);
+            Long count = productRepository.countByProduct();
+            pageList.setTotal(count);
         }else {
             productEntities = productRepository.findAllByCategory(code, pageable);
+            Long countProductByCategory = productRepository.countByProductCode(code);
+            pageList.setTotal(countProductByCategory);
             if (productEntities == null) {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
             }
         }
-        Long count = productRepository.countByProduct();
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
-        PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
-        pageList.setTotal(count);
         pageList.setPageSize(pageable.getPageSize());
         pageList.setCurrentPage(pageable.getPageNumber());
         return pageList;
@@ -133,23 +135,26 @@ public class ProductService implements IProductService {
     @Override
     public PageList<ProductOutput> searchByCategory(String name, String code, Pageable pageable) {
         List<ProductEntity> productEntity = new ArrayList<>();
+        PageList<ProductOutput> pageList = new PageList<>();
         if (code == null){
             productEntity = productRepository.searchProductByName(name, pageable);
-            if (productEntity == null) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
+//            Long count = productRepository.countByProduct();
+//            pageList.setTotal(count);
+            if (productEntity.isEmpty()) {
+                throw new ClientException(HttpStatus.NOT_FOUND, "There is no product available !");
             }
         }else {
-            productEntity = productRepository.searchProductByCategory(name, code, pageable);
-            if (productEntity == null) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
+            productEntity = productRepository.searchProductNameByCategory(name, code, pageable);
+            if (productEntity.isEmpty()) {
+                throw new ClientException(HttpStatus.NOT_FOUND, "There is no product available !");
             }
+            Long countProductByCategory = productRepository.countByProductCode(code);
+            pageList.setTotal(countProductByCategory);
         }
-        Long count = productRepository.countByProduct();
+
         List<ProductOutput> results = Converter.toList(productEntity, ProductOutput.class);
-        PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
-        pageList.setTotal(count);
         pageList.setPageSize(pageable.getPageSize());
         pageList.setCurrentPage(pageable.getPageNumber());
         return pageList;
@@ -210,7 +215,7 @@ public class ProductService implements IProductService {
         List<ProductEntity> productEntities = new ArrayList<>();
         Pageable pageable = PageRequest.of(0,10);
         productEntities = productRepository.findRelatedProductByCode(code, pageable);
-        Long count = productRepository.countByProduct();
+//        Long count = productRepository.countByProductCode(code);
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
         productOutput.setRelatedProduct(results);
         return productOutput;
@@ -240,19 +245,23 @@ public class ProductService implements IProductService {
     @Override
     public PageList<ProductOutput> findProductBestDeal(Pageable pageable, String code) {
         List<ProductEntity> productEntities = new ArrayList<>();
+        PageList<ProductOutput> pageList = new PageList<>();
         if (code == null) {
             productEntities = productRepository.findAllByBestDeal(pageable);
+            Long count = productRepository.countByProduct();
+            pageList.setTotal(count);
             if (productEntities == null) {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
             }
         }else {
             productEntities = productRepository.findAllByCodeBestDeal(pageable,code);
+            Long countProductByCategory = productRepository.countByProductCode(code);
+            pageList.setTotal(countProductByCategory);
             if (productEntities == null) {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
             }
         }
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
-        PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);
         pageList.setSuccess(true);
         pageList.setPageSize(pageable.getPageSize());

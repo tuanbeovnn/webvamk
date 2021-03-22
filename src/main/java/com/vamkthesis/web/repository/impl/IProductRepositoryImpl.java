@@ -29,7 +29,8 @@ public class IProductRepositoryImpl implements IProductRepositoryCustom {
 
     @Override
     public DiscountEntity abc() {
-        String sql = "SELECT products.*,UNIX_TIMESTAMP(products.end_time) - UNIX_TIMESTAMP( products.start_time) as time_end FROM products WHERE products.discount = (SELECT MAX(products.discount) FROM products) and products.end_time > now() order by time_end DESC limit 0,1";
+        String sql = "SELECT products.*, UNIX_TIMESTAMP(products.end_time) AS time_end FROM products " +
+                "WHERE products.discount =( SELECT MAX(products.discount) FROM products WHERE products.end_time > now() ) AND products.end_time > NOW() ORDER BY time_end DESC LIMIT 0, 1";
         Query query = em.createNativeQuery(sql, DiscountEntity.class);
         DiscountEntity discountEntity = (DiscountEntity) query.getSingleResult();
         return discountEntity;

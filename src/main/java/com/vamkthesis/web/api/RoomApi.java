@@ -7,13 +7,13 @@ import com.vamkthesis.web.api.socket.handler.MessageBuilder;
 import com.vamkthesis.web.dto.RoomDto;
 import com.vamkthesis.web.service.impl.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/room")
@@ -32,5 +32,9 @@ public class RoomApi {
         return ResponseEntityBuilder.getBuilder().setMessage("Save room successfully").setDetails(roomDto).build();
     }
 
-
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public List<RoomDto> getListNewest(@RequestParam Long id, Pageable pageable) {
+        List<RoomDto> roomDtos = roomService.findAllByMessageNotRead(id, pageable);
+        return roomDtos;
+    }
 }

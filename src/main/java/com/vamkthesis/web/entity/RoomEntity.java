@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Setter
 @Entity
 public class RoomEntity extends BaseEntity {
-    private String staffId;
+    private Long staffId;
     private String clientInfo;
     private String roomId;
 }
