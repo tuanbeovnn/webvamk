@@ -1,5 +1,6 @@
 package com.vamkthesis.web.api;
 
+import com.vamkthesis.web.api.input.UpdateRoleInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
 import com.vamkthesis.web.dto.UserDto;
@@ -36,5 +37,11 @@ public class UserApi {
     public void delete(@PathVariable("id") long id) {
         long[] ids = new long[]{id};
         userService.delete(ids);
+    }
+
+    @RequestMapping(value = "/updateRole/{id}", method = RequestMethod.PUT)
+    public void updateRole(@RequestBody UpdateRoleInput roleInput, @PathVariable("id") long id) {
+        roleInput.setId(id);
+        userService.updateRole(id, roleInput);
     }
 }

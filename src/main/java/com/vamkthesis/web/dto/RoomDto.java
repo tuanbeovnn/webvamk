@@ -9,4 +9,5 @@ public class RoomDto {
     private Long staffId;
     private String clientInfo;
     private String roomId;
+    private Long clientId;
 }

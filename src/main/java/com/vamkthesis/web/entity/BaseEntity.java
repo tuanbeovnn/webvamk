@@ -27,10 +27,12 @@ public abstract class BaseEntity {
     @CreatedBy
     private String createdBy;
 
-    @JsonIgnore
+
     @Column
     @CreatedDate
+    @JsonIgnore
     private Date createdDate;
+
     @JsonIgnore
     @Column
     @CreatedDate

@@ -21,12 +21,13 @@ public class MessageApi {
     private MessageService messageService;
     @Autowired
     SimpMessagingTemplate template;
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity save(@RequestBody MessageDto messageDto) throws JsonProcessingException {
-        messageService.save(messageDto);
-        GenericMessage<byte[]> genericMessage = MessageBuilder.getBuilder().set("data",messageDto).build();
-        template.send(String.format("/topic/%s", messageDto.getRoomNumber()), genericMessage);
-        return ResponseEntityBuilder.getBuilder().setMessage("Save message successfully").build();
+        MessageDto messageDto1 =  messageService.save(messageDto);
+        GenericMessage<byte[]> genericMessage = MessageBuilder.getBuilder().set("data",messageDto1).build();
+        template.send(String.format("/topic/%s", messageDto1.getRoomNumber()), genericMessage);
+        return ResponseEntityBuilder.getBuilder().setMessage("Save room successfully").setDetails(messageDto1).build();
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)

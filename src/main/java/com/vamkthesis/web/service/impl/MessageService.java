@@ -21,12 +21,21 @@ public class MessageService implements IMessageService {
     private IMessageRepository messageRepository;
     @Autowired
     private IRoomRepository roomRepository;
+
+
+//    @Override
+//    public void save(MessageDto messageDto) {
+//        MessageEntity messageEntity = Converter.toModel(messageDto, MessageEntity.class);
+//        messageEntity = messageRepository.save(messageEntity);
+//    }
+
+
     @Override
-    public void save(MessageDto messageDto) {
+    public MessageDto save(MessageDto messageDto) {
         MessageEntity messageEntity = Converter.toModel(messageDto, MessageEntity.class);
         messageEntity = messageRepository.save(messageEntity);
+        return Converter.toModel(messageEntity, MessageDto.class);
     }
-
 
     @Override
     public List<MessageDto> findAllByNewest(String room, Pageable pageable) {

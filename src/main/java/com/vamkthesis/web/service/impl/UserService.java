@@ -2,6 +2,7 @@ package com.vamkthesis.web.service.impl;
 
 
 import com.vamkthesis.web.api.input.ChangeInfoInput;
+import com.vamkthesis.web.api.input.UpdateRoleInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.MyUserDTO;
@@ -117,6 +118,14 @@ public class UserService implements IUserService {
             return true;
         }else throw new ClientException("Your old password not correct");
 
+    }
+
+    @Override
+    public void updateRole(Long id, UpdateRoleInput updateRoleInput) {
+        UserEntity userEntity = userRepository.findById(id).get();
+        List<RoleEntity> roleEntities = roleRepository.findAllById(updateRoleInput.getIdRoles());
+        userEntity.setRoles(roleEntities);
+        userEntity = userRepository.save(userEntity);
     }
 
     @Override

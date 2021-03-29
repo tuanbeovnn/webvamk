@@ -33,8 +33,8 @@ public class RoomApi {
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<RoomDto> getListNewest(@RequestParam Long id, Pageable pageable) {
-        List<RoomDto> roomDtos = roomService.findAllByMessageNotRead(id, pageable);
-        return roomDtos;
+    public ResponseEntity getListNewest(Pageable pageable) {
+        List<RoomDto> roomDtos = roomService.findAllByMessageNotRead(pageable);
+        return ResponseEntityBuilder.getBuilder().setMessage("Get list room successfully").setDetails(roomDtos).build();
     }
 }

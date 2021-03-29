@@ -66,7 +66,6 @@ public class PaypalController {
 					orderEntity.setStatus(1);
 					orderEntity.setCodeOrder(UUID.randomUUID().toString());
 					orderEntity = orderRepository.save(orderEntity);
-
 	            	emailService.sendMail(orderEntity.getEmail(),"Your Order", "Your Order Info" + orderEntity.toString());
 	                return "success";
 	            }
