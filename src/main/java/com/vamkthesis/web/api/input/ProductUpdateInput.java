@@ -10,7 +10,6 @@ import java.util.Date;
 public class ProductUpdateInput extends AbtractInput {
 
     private String name;
-
     protected String[] image;
     private String description;
     private String status;
@@ -21,7 +20,6 @@ public class ProductUpdateInput extends AbtractInput {
     private double discount = 0;
     private String technicalInfo;
     private double rating;
-    private Date startTime;
     private Date endTime;
 
 

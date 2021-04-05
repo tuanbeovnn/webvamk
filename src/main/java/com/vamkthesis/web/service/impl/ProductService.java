@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +43,9 @@ public class ProductService implements IProductService {
 
 
 
-    @Secured("ADMIN")
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
-    public ProductEntity save(ProductInput productInput) {
+    public ProductOutput save(ProductInput productInput) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ProductEntity productEntity = new ProductEntity();
             productEntity = Converter.toModel(productInput, ProductEntity.class);
@@ -60,9 +60,10 @@ public class ProductService implements IProductService {
         UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
         productEntity.setUser(userEntity);
         productEntity = productRepository.save(productEntity);
-        return productEntity;
+        return Converter.toModel(productEntity, ProductOutput.class);
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public ProductOutput updateInfo(ProductUpdateInput productUpdateInput) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,17 +83,18 @@ public class ProductService implements IProductService {
         productEntity.setPrice((productUpdateInput.getOriginalPrice() * (100 - productUpdateInput.getDiscount()) / 100));
         productEntity.setTechnicalInfo(productUpdateInput.getTechnicalInfo());
         productEntity.setRating(productUpdateInput.getRating());
-        productEntity.setStartTime(productUpdateInput.getStartTime());
+//        productEntity.setStartTime(productUpdateInput.getStartTime());
         productEntity.setEndTime(productUpdateInput.getEndTime());
         productEntity.setUser(userEntity);
         productEntity = productRepository.save(productEntity);
-        Long middleTime = (productUpdateInput.getEndTime().getTime()- productUpdateInput.getStartTime().getTime())/1000;
+//        Long middleTime = (productUpdateInput.getEndTime().getTime()- productUpdateInput.getStartTime().getTime())/1000;
 
         ProductOutput productOutput = Converter.toModel(productEntity, ProductOutput.class);
-        productOutput.setTimeEnd(middleTime);
+//        productOutput.setTimeEnd(middleTime);
         return productOutput;
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public DiscountDto abc() {
        DiscountEntity productEntities = productRepository.abc();
@@ -100,11 +102,18 @@ public class ProductService implements IProductService {
         return results;
     }
 
+
     @Override
     public void delete(long[] ids) {
         for (long item : ids) {
             productRepository.deleteById(item);
         }
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @Override
+    public void deleteById(long id) {
+        productRepository.deleteById(id);
     }
 
     @Override

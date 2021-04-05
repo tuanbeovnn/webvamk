@@ -8,6 +8,7 @@ import com.vamkthesis.web.exception.EmailExistsException;
 import com.vamkthesis.web.repository.ICategoryRepository;
 import com.vamkthesis.web.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CategoryService implements ICategoryService {
     @Autowired
     ICategoryRepository categoryRepository;
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
        CategoryEntity categoryEntity = new CategoryEntity();
@@ -36,6 +38,7 @@ public class CategoryService implements ICategoryService {
        return Converter.toModel(categoryEntity,CategoryDto.class);
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public void delete(long[] ids) {
         for (long item : ids) {

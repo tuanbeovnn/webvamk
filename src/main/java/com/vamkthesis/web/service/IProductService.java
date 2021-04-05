@@ -5,15 +5,15 @@ import com.vamkthesis.web.api.input.ProductInput;
 import com.vamkthesis.web.api.input.ProductUpdateInput;
 import com.vamkthesis.web.api.output.ProductOutput;
 import com.vamkthesis.web.dto.DiscountDto;
-import com.vamkthesis.web.entity.ProductEntity;
 import com.vamkthesis.web.paging.PageList;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface IProductService {
-    ProductEntity save(ProductInput productDto);
+    ProductOutput save(ProductInput productDto);
     void delete(long[] ids);
+    void deleteById(long id);
 //    PageList<ProductOutput> findAll(Pageable pageable);// new
 //    int totalItem();
     PageList<ProductOutput> findAllByCategory(String code, Pageable pageable);

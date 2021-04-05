@@ -135,7 +135,6 @@ public class UserService implements IUserService {
            userRepository.delete(userEntity);
 
         }
-//        userRepository.findAllById()
     }
 
     @Override

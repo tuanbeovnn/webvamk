@@ -7,6 +7,7 @@ import com.vamkthesis.web.entity.RoleEntity;
 import com.vamkthesis.web.repository.IRoleRepository;
 import com.vamkthesis.web.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 public class RoleService implements IRoleService {
     @Autowired
     private IRoleRepository roleRepository;
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public RoleDto save(RoleDto roleDto) {
         RoleEntity roleEntity = new RoleEntity();
@@ -28,6 +31,7 @@ public class RoleService implements IRoleService {
         return Converter.toModel(roleEntity, RoleDto.class);
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public void deleteById(Long id) {
         roleRepository.deleteById(id);

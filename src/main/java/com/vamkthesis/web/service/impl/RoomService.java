@@ -37,6 +37,9 @@ public class RoomService implements IRoomService {
         return roomDto;
     }
 
+
+
+//    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public List<RoomDto> findAllByMessageNotRead(Pageable pageable) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

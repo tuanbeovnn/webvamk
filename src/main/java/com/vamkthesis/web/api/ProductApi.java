@@ -7,7 +7,6 @@ import com.vamkthesis.web.api.input.RatingInput;
 import com.vamkthesis.web.api.output.ProductOutput;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
 import com.vamkthesis.web.dto.DiscountDto;
-import com.vamkthesis.web.entity.ProductEntity;
 import com.vamkthesis.web.entity.RatingEntity;
 import com.vamkthesis.web.paging.PageList;
 import com.vamkthesis.web.service.IProductService;
@@ -15,9 +14,10 @@ import com.vamkthesis.web.service.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -31,6 +31,7 @@ public class ProductApi {
     @Autowired
     private IRatingService ratingService;
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateProduct(@RequestBody ProductUpdateInput productUpdateInput, @PathVariable("id") long id) {
         productUpdateInput.setId(id);
@@ -65,10 +66,19 @@ public class ProductApi {
         productService.delete(ids);
     }
 
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @DeleteMapping(value = "/remove/{id}")
+    public ResponseEntity deleteProduct(@PathVariable("id") long id) {
+        productService.deleteById(id);
+        return ResponseEntityBuilder.getBuilder().setMessage("Delete product successfully").build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ProductEntity save(@RequestBody ProductInput productInput){
-        return productService.save(productInput);
+    public ResponseEntity save(@RequestBody @Valid ProductInput productInput){
+        ProductOutput productOutput = productService.save(productInput);
+        return ResponseEntityBuilder.getBuilder().setDetails(productOutput).setMessage("Save product successfully").build();
+
     }
 
 

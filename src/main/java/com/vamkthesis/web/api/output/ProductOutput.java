@@ -31,6 +31,7 @@ public class ProductOutput {
     protected double discount = 0;
     private String technicalInfo;
     private Long timeEnd;
+    private Integer quantity;
     private List<ProductOutput> relatedProduct = new ArrayList<>();
 
     @JsonProperty("image")
