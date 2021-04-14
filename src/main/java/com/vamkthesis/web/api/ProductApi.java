@@ -5,9 +5,9 @@ import com.vamkthesis.web.api.input.ProductInput;
 import com.vamkthesis.web.api.input.ProductUpdateInput;
 import com.vamkthesis.web.api.input.RatingInput;
 import com.vamkthesis.web.api.output.ProductOutput;
+import com.vamkthesis.web.api.output.RatingOutPut;
 import com.vamkthesis.web.api.output.ResponseEntityBuilder;
 import com.vamkthesis.web.dto.DiscountDto;
-import com.vamkthesis.web.entity.RatingEntity;
 import com.vamkthesis.web.paging.PageList;
 import com.vamkthesis.web.service.IProductService;
 import com.vamkthesis.web.service.IRatingService;
@@ -57,8 +57,14 @@ public class ProductApi {
     }
 
     @RequestMapping(value = "/rating", method = RequestMethod.POST)
-    public RatingEntity rating(@ModelAttribute RatingInput ratingInput) {
-        return ratingService.save(ratingInput);
+    public ResponseEntity rating(@RequestBody RatingInput ratingInput) {
+        RatingOutPut ratingOutPut = ratingService.saveNew(ratingInput);
+        return ResponseEntityBuilder.getBuilder().setDetails(ratingOutPut).setMessage("Save rating successfully").build();
+    }
+    @RequestMapping(value = "/listRating", method = RequestMethod.GET)
+    public PageList<RatingOutPut> showListProductRating(@RequestParam long id, Pageable pageable) {
+        PageList<RatingOutPut> pageList = ratingService.findAllByProductId(id,pageable);
+        return pageList;
     }
 
     @DeleteMapping(value = "/remove-list")
@@ -83,10 +89,13 @@ public class ProductApi {
 
 
 
-//    @RequestMapping(value = "/product-category", method = RequestMethod.GET)
-//    public List<ProductDto> showListProductCategory(@ModelAttribute ProductDto productDto, Pageable pageable) {
-//        return productService.findAllByCategory(productDto.getCategoryCode(), pageable);
-//    }
+    @RequestMapping(value = "/trendingCate", method = RequestMethod.GET)
+    public PageList<ProductOutput> showListProductCategoryTredingCategory(String code, Pageable pageable) {
+        PageList<ProductOutput> pageList = productService.findAllByCategoryTrending(code,pageable);
+        return pageList;
+    }
+
+
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public PageList<ProductOutput> showListProductCategory(Pageable pageable) {

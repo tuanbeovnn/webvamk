@@ -10,7 +10,6 @@ import com.vamkthesis.web.exception.ClientException;
 import com.vamkthesis.web.exception.CustomException;
 import com.vamkthesis.web.exception.TokenExpiredException;
 import com.vamkthesis.web.repository.ITokenRepository;
-import com.vamkthesis.web.service.IAuthenticationService;
 import com.vamkthesis.web.service.impl.JwtUserService;
 import io.jsonwebtoken.Claims;
 import org.modelmapper.ModelMapper;
@@ -45,9 +44,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    IAuthenticationService authenticationService;
     @Autowired
     ITokenRepository tokenRepository;
 

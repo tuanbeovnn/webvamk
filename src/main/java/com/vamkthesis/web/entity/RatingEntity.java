@@ -13,6 +13,8 @@ import javax.persistence.*;
 public class RatingEntity extends BaseEntity{
     private double rating;
     private String comment;
+    private String email;
+    private String name;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

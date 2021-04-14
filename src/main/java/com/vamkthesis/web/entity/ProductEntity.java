@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,15 +15,17 @@ import java.util.List;
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
 
-    @NotNull
+
     private String name;
-    @NotNull
+
     private String image;
+    private String color;
+    @Column(columnDefinition = "text")
     private String description;
     private String status;
     private String code;
     private Integer quantity;
-    @NotNull
+
     private Double price;
     private Double originalPrice;
     private double discount = 0;

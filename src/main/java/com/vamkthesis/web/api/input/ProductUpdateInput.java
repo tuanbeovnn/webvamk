@@ -21,6 +21,9 @@ public class ProductUpdateInput extends AbtractInput {
     private String technicalInfo;
     private double rating;
     private Date endTime;
+    protected String categoryCode;
+    protected String brandCode;
+
 
 
 //    @JsonProperty("image")

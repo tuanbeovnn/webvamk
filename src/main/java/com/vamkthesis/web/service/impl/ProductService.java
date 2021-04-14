@@ -1,6 +1,7 @@
 package com.vamkthesis.web.service.impl;
 
 
+import com.google.gson.Gson;
 import com.vamkthesis.web.api.input.ProductInput;
 import com.vamkthesis.web.api.input.ProductUpdateInput;
 import com.vamkthesis.web.api.output.ProductOutput;
@@ -40,6 +41,8 @@ public class ProductService implements IProductService {
     private UserRepository userRepository;
 //    @Autowired
 //    private IMobileRepository mobileRepository;
+    @Autowired
+    Gson gson;
 
 
 
@@ -57,6 +60,8 @@ public class ProductService implements IProductService {
 //        productEntity.setOriginalPrice(100 - (productEntity.getPrice() * 100) / productEntity.getOriginalPrice());
         String image = String.join(";", productInput.getImage());
         productEntity.setImage(image);
+        String color = String.join(";", productInput.getColor());
+        productEntity.setColor(color);
         UserEntity userEntity = userRepository.findById(myUserDTO.getId()).get();
         productEntity.setUser(userEntity);
         productEntity = productRepository.save(productEntity);
@@ -83,16 +88,23 @@ public class ProductService implements IProductService {
         productEntity.setPrice((productUpdateInput.getOriginalPrice() * (100 - productUpdateInput.getDiscount()) / 100));
         productEntity.setTechnicalInfo(productUpdateInput.getTechnicalInfo());
         productEntity.setRating(productUpdateInput.getRating());
+        CategoryEntity categoryEntity = iCategoryRepository.findOneByCode(productUpdateInput.getCategoryCode());
+        productEntity.setCategory(categoryEntity);
+        BrandEntity brandEntity = brandRepository.findOneByCode(productUpdateInput.getBrandCode());
+        productEntity.setBrand(brandEntity);
 //        productEntity.setStartTime(productUpdateInput.getStartTime());
         productEntity.setEndTime(productUpdateInput.getEndTime());
         productEntity.setUser(userEntity);
         productEntity = productRepository.save(productEntity);
 //        Long middleTime = (productUpdateInput.getEndTime().getTime()- productUpdateInput.getStartTime().getTime())/1000;
 
+
         ProductOutput productOutput = Converter.toModel(productEntity, ProductOutput.class);
 //        productOutput.setTimeEnd(middleTime);
         return productOutput;
     }
+
+
 
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
@@ -132,6 +144,20 @@ public class ProductService implements IProductService {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
             }
         }
+        List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
+        pageList.setList(results);
+        pageList.setSuccess(true);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        return pageList;
+    }
+
+    @Override
+    public PageList<ProductOutput> findAllByCategoryTrending(String code, Pageable pageable) {
+        PageList<ProductOutput> pageList = new PageList<>();
+        List<ProductEntity> productEntities = productRepository.findAllByCategoryTrending(code, pageable);
+        Long count = productRepository.countByByCategoryTrending(code);
+        pageList.setTotal(count);
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
         pageList.setList(results);
         pageList.setSuccess(true);

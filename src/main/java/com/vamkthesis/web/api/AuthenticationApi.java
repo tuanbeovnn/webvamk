@@ -10,7 +10,6 @@ import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.*;
 import com.vamkthesis.web.entity.UserEntity;
 import com.vamkthesis.web.exception.ClientException;
-import com.vamkthesis.web.exception.EmailOrPasswordNotCorrectException;
 import com.vamkthesis.web.repository.UserRepository;
 import com.vamkthesis.web.service.IAuthenticationService;
 import com.vamkthesis.web.service.IUserService;
@@ -71,6 +70,7 @@ public class AuthenticationApi {
     private String secret;
 
 
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity registration(@RequestBody @Valid UserDto userDto) throws MessagingException {
         UserDto dto = userService.save(userDto);
@@ -84,34 +84,35 @@ public class AuthenticationApi {
             @ApiResponse(code = 200, message = "Login Success", response = AuthToken.class),
     })
     public ResponseEntity login(@RequestBody LoginInput loginInfo) {
-            Authentication authentication = null;
-            Authentication auth = new UsernamePasswordAuthenticationTokenCustom(loginInfo.getEmail(), loginInfo.getPassword());
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            try {
-                authentication = authenticationManager.authenticate(auth);
-            }catch (Exception e) {
-                throw new EmailOrPasswordNotCorrectException();
-            }
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            MyUserDTO myUserDTO = (MyUserDTO) authentication.getPrincipal();
-//            myUserDTO.setRoles();
-            final String token = tokenProvider.generateToken(myUserDTO);
-            if (myUserDTO.getVerifyAccount()==0) {
-                throw new ClientException("Your Account has not been verified");
-            }
-            UUID refreshToken = UUID.randomUUID();
-            TokenDto tokenDTO = new TokenDto();
-            tokenDTO.setAccessToken(token);
-            tokenDTO.setRefreshToken(refreshToken.toString());
-//            tokenDTO.setEnvoke(false);
-
-            tokenService.saveToken(tokenDTO);
-//            res.put("token", token);
-            return ResponseEntityBuilder.getBuilder().setMessage("Login success").setDetails(tokenDTO).build();
+//            Authentication authentication = null;
+//            Authentication auth = new UsernamePasswordAuthenticationToken(loginInfo.getEmail(), loginInfo.getPassword());
+//            SecurityContextHolder.getContext().setAuthentication(auth);
+//            try {
+//                authentication = authenticationManager.authenticate(auth);
+//            }catch (Exception e) {
+//                throw new EmailOrPasswordNotCorrectException();
+//            }
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            MyUserDTO myUserDTO = (MyUserDTO) authentication.getPrincipal();
+////            myUserDTO.setRoles();
+//            final String token = tokenProvider.generateToken(myUserDTO);
+//            if (myUserDTO.getVerifyAccount()==0) {
+//                throw new ClientException("Your Account has not been verified");
+//            }
+//            UUID refreshToken = UUID.randomUUID();
+//            TokenDto tokenDTO = new TokenDto();
+//            tokenDTO.setAccessToken(token);
+//            tokenDTO.setRefreshToken(refreshToken.toString());
+////            tokenDTO.setEnvoke(false);
+//
+//            tokenService.saveToken(tokenDTO);
+////            res.put("token", token);
+            TokenDto tokenDto = tokenService.login(loginInfo);
+            return ResponseEntityBuilder.getBuilder().setMessage("Login success").setDetails(tokenDto).build();
 
     }
 
-    @RequestMapping(value = "/google/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/google/login", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "true : success, false: failed"),
     })

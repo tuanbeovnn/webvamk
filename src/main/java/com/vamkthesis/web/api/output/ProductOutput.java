@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,7 @@ public class ProductOutput {
     @NotNull
     @JsonIgnore
     protected String image;
+    protected String color;
     protected String description;
     protected String status;
     protected String categoryCode;
@@ -30,7 +32,7 @@ public class ProductOutput {
     protected Double originalPrice;
     protected double discount = 0;
     private String technicalInfo;
-    private Long timeEnd;
+    private Date endTime;
     private Integer quantity;
     private List<ProductOutput> relatedProduct = new ArrayList<>();
 
@@ -39,4 +41,8 @@ public class ProductOutput {
         return StringUtils.isEmpty(image) ? new String[]{} : image.split(";");
     }
 
+    @JsonProperty("color")
+    public String[] getColor() {
+        return StringUtils.isEmpty(color) ? new String[]{} : color.split(";");
+    }
 }

@@ -45,7 +45,6 @@ public class UserService implements IUserService {
     private String secret;
     @Override
     public UserDto save(UserDto dto) throws MessagingException {
-
         UserEntity userEntity = Converter.toModel(dto, UserEntity.class);
             UserEntity userEntity1 = userRepository.findOneByEmail(dto.getEmail());
             if (userEntity1 != null) {
