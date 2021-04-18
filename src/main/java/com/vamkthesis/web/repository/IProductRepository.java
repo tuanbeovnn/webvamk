@@ -66,7 +66,11 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long>, 
     @Query(value = "SELECT COUNT(*) FROM products AS p, categories c, (SELECT SUM(quantity) AS quantity, product_id FROM orderdetails GROUP BY product_id ORDER BY quantity DESC ) AS ads WHERE p.id = ads.product_id and p.category_id = c.id and c.code like ?1", nativeQuery = true)
     Long countByByCategoryTrending(String code);// new
 
+    @Query(value = "SELECT * from products WHERE products.quantity <=10",nativeQuery = true)
+    List<ProductEntity> findAllByProductQuantity(Pageable pageable);
 
+    @Query(value = "SELECT count(*) from products WHERE products.quantity <=10",nativeQuery = true)
+    Long countByProductQuantity();// new
 //    List<ProductEntity> findByName(String name, Pageable pageable);
 
 

@@ -27,6 +27,7 @@ public interface IProductService {
     ProductOutput updateInfo(ProductUpdateInput productUpdateInput);
     PageList<ProductOutput> findAllByCategoryTrending(String code, Pageable pageable);
     DiscountDto abc();
+    PageList<ProductOutput> findAllByProductQuantity(Pageable pageable);
 
 
 }

@@ -37,6 +37,7 @@ public class RoleService implements IRoleService {
         roleRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public List<RoleDto> findAll() {
         List<RoleEntity> roleEntity = roleRepository.findAll();

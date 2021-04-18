@@ -114,6 +114,20 @@ public class ProductService implements IProductService {
         return results;
     }
 
+    @Override
+    public PageList<ProductOutput> findAllByProductQuantity(Pageable pageable) {
+        PageList pageList = new PageList();
+        List<ProductEntity> productEntities = productRepository.findAllByProductQuantity(pageable);
+        Long count = productRepository.countByProduct();
+        List<ProductOutput> productOutputs = Converter.toList(productEntities,ProductOutput.class);
+        pageList.setList(productOutputs);
+        pageList.setTotal(count);
+        pageList.setSuccess(true);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        return pageList;
+    }
+
 
     @Override
     public void delete(long[] ids) {
@@ -227,7 +241,7 @@ public class ProductService implements IProductService {
     @Override
     public PageList<ProductOutput> findAllByNewest(Pageable pageable) {
         List<ProductEntity> productEntities = productRepository.findAllByNewest(pageable);
-        Long count = productRepository.countByProduct();
+        Long count = productRepository.countByProductQuantity();
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
         PageList<ProductOutput> pageList = new PageList<>();
         pageList.setList(results);

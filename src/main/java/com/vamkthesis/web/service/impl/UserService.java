@@ -4,6 +4,7 @@ package com.vamkthesis.web.service.impl;
 import com.vamkthesis.web.api.input.ChangeInfoInput;
 import com.vamkthesis.web.api.input.UpdateRoleInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
+import com.vamkthesis.web.api.output.UserOutput;
 import com.vamkthesis.web.convert.Converter;
 import com.vamkthesis.web.dto.MyUserDTO;
 import com.vamkthesis.web.dto.UserDto;
@@ -11,12 +12,15 @@ import com.vamkthesis.web.entity.RoleEntity;
 import com.vamkthesis.web.entity.UserEntity;
 import com.vamkthesis.web.exception.ClientException;
 import com.vamkthesis.web.exception.EmailExistsException;
+import com.vamkthesis.web.paging.PageList;
 import com.vamkthesis.web.repository.IRoleRepository;
 import com.vamkthesis.web.repository.UserRepository;
 import com.vamkthesis.web.service.IUserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -119,12 +123,30 @@ public class UserService implements IUserService {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
-    public void updateRole(Long id, UpdateRoleInput updateRoleInput) {
+    public UserOutput updateRole(Long id, UpdateRoleInput updateRoleInput) {
         UserEntity userEntity = userRepository.findById(id).get();
         List<RoleEntity> roleEntities = roleRepository.findAllById(updateRoleInput.getIdRoles());
         userEntity.setRoles(roleEntities);
         userEntity = userRepository.save(userEntity);
+        UserOutput userOutput = Converter.toModel(userEntity, UserOutput.class);
+        return userOutput;
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @Override
+    public PageList<UserOutput> findAllByRoles(Pageable pageable) {
+        PageList<UserOutput> pageList = new PageList<>();
+        List<UserEntity> userEntities = userRepository.findAllByRoles(pageable);
+        Long count = userRepository.countALLByRoles();
+        pageList.setTotal(count);
+        List<UserOutput> userOutputs = Converter.toList(userEntities, UserOutput.class);
+        pageList.setCurrentPage(pageable.getPageNumber());
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setList(userOutputs);
+        pageList.setSuccess(true);
+        return pageList;
     }
 
     @Override
@@ -134,6 +156,12 @@ public class UserService implements IUserService {
            userRepository.delete(userEntity);
 
         }
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @Override
+    public void deleteById(long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
