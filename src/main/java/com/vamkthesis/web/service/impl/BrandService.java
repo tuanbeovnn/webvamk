@@ -9,6 +9,7 @@ import com.vamkthesis.web.repository.IBrandRepository;
 import com.vamkthesis.web.service.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +37,17 @@ public class BrandService implements IBrandService {
         List<BrandEntity> brandEntity = brandRepository.findAll(pageable).getContent();
         List<BrandDto> brandDto = Converter.toList(brandEntity,BrandDto.class);
         return brandDto;
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @Override
+    public BrandDto update(BrandDto brandDto) {
+        BrandEntity brandEntity = brandRepository.findById(brandDto.getId()).get();
+        brandEntity.setCode(brandDto.getCode());
+        brandEntity.setImage(brandDto.getImage());
+        brandEntity.setName(brandDto.getName());
+        brandEntity = brandRepository.save(brandEntity);
+        BrandDto brandDto1 = Converter.toModel(brandEntity,BrandDto.class);
+        return brandDto1;
     }
 }

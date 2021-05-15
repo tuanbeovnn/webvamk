@@ -24,7 +24,7 @@ public class CategoryApi {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public CategoryDto updateCate(@RequestBody CategoryDto categoryDto, @PathVariable("id") long id) {
         categoryDto.setId(id);
-        return categoryService.save(categoryDto);
+        return categoryService.update(categoryDto);
     }
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<CategoryDto> showListCategory(@ModelAttribute CategoryDto categoryDto){

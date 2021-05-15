@@ -47,18 +47,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
                         MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    String token = accessor.getNativeHeader("token").get(0);
-//                    Claims claims = jwtTokenUtil.getAllClaimsFromToken(token);
-//                    MyUserDTO myUserDTO = new ModelMapper().map(claims, MyUserDTO.class);
-//                    accessor.setUser(myUserDTO);
-//                }
                 return message;
             }
         });
     }
-//    @Override
-//    public void configureClientOutboundChannel(ChannelRegistration registration) {
-//        registration.taskExecutor().maxPoolSize(10);
-//    }
 }

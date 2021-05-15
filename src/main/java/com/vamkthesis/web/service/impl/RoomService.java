@@ -11,6 +11,7 @@ import com.vamkthesis.web.repository.IRoomRepository;
 import com.vamkthesis.web.service.IRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +39,15 @@ public class RoomService implements IRoomService {
     }
 
 
-
-//    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public List<RoomDto> findAllByMessageNotRead(Pageable pageable) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<RoomDto> roomDtos = new ArrayList<>();
-        if (myUserDTO.getRoles().contains("STAFF")) {
+//        if (myUserDTO.getRoles().contains("STAFF")) {
             List<RoomEntity> roomEntities = roomRepository.findAllByMessageNotRead(myUserDTO.getId(), pageable);
             roomDtos  = Converter.toList(roomEntities, RoomDto.class);
-        }
+//        }
         return roomDtos;
     }
 

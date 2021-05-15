@@ -63,4 +63,10 @@ public class UserApi {
         UserOutput userOutput =  userService.updateRole(id, roleInput);
         return ResponseEntityBuilder.getBuilder().setMessage("Update role successfully").setDetails(userOutput).build();
     }
+
+    @RequestMapping(value = "/deactive/{id}", method = RequestMethod.POST)
+    public ResponseEntity deActive(@PathVariable("id") long id) {
+        userService.deactiveAccount(id);
+        return ResponseEntityBuilder.getBuilder().setMessage("Update account successfully").build();
+    }
 }

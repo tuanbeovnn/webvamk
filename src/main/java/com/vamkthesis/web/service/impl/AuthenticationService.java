@@ -80,6 +80,11 @@ public class AuthenticationService implements IAuthenticationService {
         return true;
     }
 
+    /**
+     * @TuanNguyen
+     * @param loginInfo
+     * @return
+     */
     @Override
     public TokenDto login(LoginInput loginInfo) {
         Authentication authentication = null;

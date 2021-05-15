@@ -51,4 +51,15 @@ public class CategoryService implements ICategoryService {
         List<CategoryEntity> categoryEntity = categoryRepository.findAll();
         return categoryEntity.stream().map(e->Converter.toModel(e,CategoryDto.class)).collect(Collectors.toList());
     }
+
+    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+    @Override
+    public CategoryDto update(CategoryDto categoryDto) {
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryDto.getId()).get();
+        categoryEntity.setName(categoryDto.getName());
+        categoryEntity.setCode(categoryDto.getCode());
+        categoryEntity = categoryRepository.save(categoryEntity);
+        CategoryDto categoryDto1 = Converter.toModel(categoryEntity, CategoryDto.class);
+        return categoryDto1;
+    }
 }

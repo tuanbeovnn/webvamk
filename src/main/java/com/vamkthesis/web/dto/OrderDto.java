@@ -27,8 +27,8 @@ public class OrderDto extends AbstractDto {
     private String state;
     @NotEmpty(message = "City is required")
     private String city;
-    @NotEmpty(message = "ZipCode is required")
-    private String zipCode;
+
+    private Long zipCode;
 
 
 //    private double discount;

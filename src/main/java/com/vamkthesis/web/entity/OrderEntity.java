@@ -38,8 +38,8 @@ public class OrderEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    private List<TransactionEntity> trans = new ArrayList<>();
+//    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+//    private List<TransactionEntity> trans = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<OrderDetailEntity> details = new ArrayList<>();

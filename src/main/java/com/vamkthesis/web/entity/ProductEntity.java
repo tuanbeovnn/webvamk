@@ -18,6 +18,7 @@ public class ProductEntity extends BaseEntity {
 
     private String name;
 
+    @Column(name = "image" , columnDefinition = "TEXT")
     private String image;
     private String color;
     @Column(columnDefinition = "text")

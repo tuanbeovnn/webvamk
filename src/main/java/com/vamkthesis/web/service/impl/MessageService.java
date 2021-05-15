@@ -22,14 +22,11 @@ public class MessageService implements IMessageService {
     @Autowired
     private IRoomRepository roomRepository;
 
-
-//    @Override
-//    public void save(MessageDto messageDto) {
-//        MessageEntity messageEntity = Converter.toModel(messageDto, MessageEntity.class);
-//        messageEntity = messageRepository.save(messageEntity);
-//    }
-
-
+    /**
+     * @TuanNguyen
+     * @param messageDto
+     * @return
+     */
     @Override
     public MessageDto save(MessageDto messageDto) {
         MessageEntity messageEntity = Converter.toModel(messageDto, MessageEntity.class);
@@ -37,6 +34,12 @@ public class MessageService implements IMessageService {
         return Converter.toModel(messageEntity, MessageDto.class);
     }
 
+    /**
+     * @TuanNguyen
+     * @param room
+     * @param pageable
+     * @return
+     */
     @Override
     public List<MessageDto> findAllByNewest(String room, Pageable pageable) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -22,4 +22,5 @@ public interface IUserService {
     boolean changePassword(ChangeInfoInput changeInfoInput);
     UserOutput updateRole(Long id, UpdateRoleInput updateRoleInput);
     PageList<UserOutput> findAllByRoles(Pageable pageable);
+    void deactiveAccount(Long id);
 }

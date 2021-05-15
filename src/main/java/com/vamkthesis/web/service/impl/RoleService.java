@@ -17,7 +17,7 @@ public class RoleService implements IRoleService {
     @Autowired
     private IRoleRepository roleRepository;
 
-    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public RoleDto save(RoleDto roleDto) {
         RoleEntity roleEntity = new RoleEntity();

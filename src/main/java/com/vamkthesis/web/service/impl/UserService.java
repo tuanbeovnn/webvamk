@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.util.ArrayList;
@@ -47,17 +48,25 @@ public class UserService implements IUserService {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    /**
+     * Author @TuanNguyen
+     *
+     * @param dto
+     * @return
+     * @throws MessagingException
+     */
     @Override
     public UserDto save(UserDto dto) throws MessagingException {
         UserEntity userEntity = Converter.toModel(dto, UserEntity.class);
-            UserEntity userEntity1 = userRepository.findOneByEmail(dto.getEmail());
-            if (userEntity1 != null) {
-                throw new EmailExistsException();
-            }
+        UserEntity userEntity1 = userRepository.findOneByEmail(dto.getEmail());
+        if (userEntity1 != null) {
+            throw new EmailExistsException();
+        }
         List<RoleEntity> roleEntities = new ArrayList<>();
-        for (String roles : dto.getRoles()){
+        for (String roles : dto.getRoles()) {
             RoleEntity roleEntity = roleRepository.findOneByName(roles);
-            if (roleEntity == null){
+            if (roleEntity == null) {
                 throw new ClientException("Your role could not find");
             }
             roleEntities.add(roleEntity);
@@ -68,10 +77,11 @@ public class UserService implements IUserService {
         UserDto userDTO = Converter.toModel(userEntity, UserDto.class);
         return userDTO;
     }
+
     @Override
     public UserUpdateInput updateInfo(UserUpdateInput userUpdateInput) {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity userEntity  = userRepository.findById(userUpdateInput.getId()).get();
+        UserEntity userEntity = userRepository.findById(userUpdateInput.getId()).get();
         userEntity.setAddress(userUpdateInput.getAddress());
         userEntity.setAvatar(userUpdateInput.getAvatar());
         userEntity.setBio(userUpdateInput.getBio());
@@ -81,9 +91,9 @@ public class UserService implements IUserService {
         userEntity.setPhone(userUpdateInput.getPhone());
         userEntity.setUsername(userUpdateInput.getUsername());
         List<RoleEntity> roleEntities = new ArrayList<>();
-        for (String roles : userUpdateInput.getRoles()){
+        for (String roles : userUpdateInput.getRoles()) {
             RoleEntity roleEntity = roleRepository.findOneByName(roles);
-            if (roleEntity == null){
+            if (roleEntity == null) {
                 throw new ClientException("Your role could not find");
             }
             roleEntities.add(roleEntity);
@@ -107,7 +117,7 @@ public class UserService implements IUserService {
             throw new ClientException("Email has been verified already !");
         }
         String signature = DigestUtils.sha256Hex(resend + expire + secret);
-        String message = String.format("<h2>Click a link below to VERIFY your account</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href=' %s/api/auth/verify?email=%s&expire=%d&signature=%s'>Verify Email</a>",account, email,expire, signature);
+        String message = String.format("<h2>Click a link below to VERIFY your account</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;'href=' %s/api/auth/verify?email=%s&expire=%d&signature=%s'>Verify Email</a>", account, email, expire, signature);
         emailService.sendMail(resend, "VERIFY ACCOUNT", message);
     }
 
@@ -119,7 +129,7 @@ public class UserService implements IUserService {
             userEntity.setPassword(passwordEncoder.encode(changeInfoInput.getNewPassword()));
             userRepository.save(userEntity);
             return true;
-        }else throw new ClientException("Your old password not correct");
+        } else throw new ClientException("Your old password not correct");
 
     }
 
@@ -149,11 +159,24 @@ public class UserService implements IUserService {
         return pageList;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
+    @Override
+    public void deactiveAccount(Long id) {
+        UserEntity userEntity = userRepository.findById(id).get();
+        if (userEntity.getVerifyAccount() == 1) {
+            userEntity.setVerifyAccount(0);
+        }else if (userEntity.getVerifyAccount() == 0){
+            userEntity.setVerifyAccount(1);
+        }
+        userEntity = userRepository.save(userEntity);
+    }
+
     @Override
     public void delete(long[] ids) {
-        for (long item : ids){
-           UserEntity userEntity = userRepository.findById(item).get();
-           userRepository.delete(userEntity);
+        for (long item : ids) {
+            UserEntity userEntity = userRepository.findById(item).get();
+            userRepository.delete(userEntity);
 
         }
     }
@@ -167,7 +190,7 @@ public class UserService implements IUserService {
     @Override
     public UserDto findUserById(Long id) {
         UserEntity userEntity = userRepository.findById(id).get();
-        UserDto dto = Converter.toModel(userEntity,UserDto.class);
+        UserDto dto = Converter.toModel(userEntity, UserDto.class);
         return dto;
     }
 

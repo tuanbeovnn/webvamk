@@ -145,10 +145,14 @@ public class AuthenticationApi {
         return ResponseEntity.status(200).body(tokenDTO);
     }
 
+
+    /**
+     * @TuanNguyen
+     * @param tokenInput
+     * @return
+     */
     @RequestMapping(value = "/facebook/login", method = RequestMethod.POST)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "true : success, false: failed"),
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "true : success, false: failed"),})
     public ResponseEntity loginFacebook(@RequestBody TokenInput tokenInput) {
 
         Facebook facebook = new FacebookTemplate(tokenInput.getAccessToken());

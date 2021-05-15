@@ -28,6 +28,8 @@ public interface IProductService {
     PageList<ProductOutput> findAllByCategoryTrending(String code, Pageable pageable);
     DiscountDto abc();
     PageList<ProductOutput> findAllByProductQuantity(Pageable pageable);
+    PageList<ProductOutput> findAllByBrands(Long id, Pageable pageable);
+    PageList<ProductOutput> findAllByCategoryAndBrand(String codeCate, String codeBrand, Pageable pageable);
 
 
 }

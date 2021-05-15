@@ -45,7 +45,11 @@ public class ProductService implements IProductService {
     Gson gson;
 
 
-
+    /**
+     * Author @TuanNguyen
+     * @param productInput
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public ProductOutput save(ProductInput productInput) {
@@ -57,7 +61,6 @@ public class ProductService implements IProductService {
         BrandEntity brandEntity = brandRepository.findOneByCode(productInput.getBrandCode());
         productEntity.setBrand(brandEntity);
         productEntity.setPrice((productInput.getOriginalPrice() * (100 - productInput.getDiscount()) / 100));
-//        productEntity.setOriginalPrice(100 - (productEntity.getPrice() * 100) / productEntity.getOriginalPrice());
         String image = String.join(";", productInput.getImage());
         productEntity.setImage(image);
         String color = String.join(";", productInput.getColor());
@@ -128,6 +131,34 @@ public class ProductService implements IProductService {
         return pageList;
     }
 
+    @Override
+    public PageList<ProductOutput> findAllByBrands(Long id, Pageable pageable) {
+        PageList pageList = new PageList();
+        List<ProductEntity> productEntities = productRepository.findAllByBrands(id, pageable);
+        List<ProductOutput> productOutputs = Converter.toList(productEntities,ProductOutput.class);
+        Long count = productRepository.countByBrands(id);
+        pageList.setList(productOutputs);
+        pageList.setTotal(count);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        pageList.setSuccess(true);
+        return pageList;
+    }
+
+    @Override
+    public PageList<ProductOutput> findAllByCategoryAndBrand(String codeCate, String codeBrand, Pageable pageable) {
+        PageList pageList = new PageList();
+        List<ProductEntity> productEntities = productRepository.findAllByCategoryAndBrand(codeCate,codeBrand,pageable);
+        List<ProductOutput> productOutputs = Converter.toList(productEntities, ProductOutput.class);
+        Long count = productRepository.countByCategoryAndBrand(codeCate, codeBrand);
+        pageList.setList(productOutputs);
+        pageList.setTotal(count);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        pageList.setSuccess(true);
+        return pageList;
+    }
+
 
     @Override
     public void delete(long[] ids) {
@@ -152,7 +183,7 @@ public class ProductService implements IProductService {
             pageList.setTotal(count);
         }else {
             productEntities = productRepository.findAllByCategory(code, pageable);
-            Long countProductByCategory = productRepository.countByProductCode(code);
+            Long countProductByCategory = productRepository.countByCategory(code);
             pageList.setTotal(countProductByCategory);
             if (productEntities == null) {
                 throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
@@ -180,6 +211,20 @@ public class ProductService implements IProductService {
         return pageList;
     }
 
+    @Override
+    public PageList<ProductOutput> findProductTrending(Pageable pageable) {
+        List<ProductEntity> productEntity = productRepository.findAllByTrendding(pageable);
+        Long count = productRepository.countByTrendding();
+        List<ProductOutput> results = Converter.toList(productEntity, ProductOutput.class);
+        PageList<ProductOutput> pageList = new PageList<>();
+        pageList.setList(results);
+        pageList.setSuccess(true);
+        pageList.setTotal(count);
+        pageList.setPageSize(pageable.getPageSize());
+        pageList.setCurrentPage(pageable.getPageNumber());
+        return pageList;
+    }
+
 
     @Override
     public PageList<ProductOutput> searchByCategory(String name, String code, Pageable pageable) {
@@ -187,17 +232,11 @@ public class ProductService implements IProductService {
         PageList<ProductOutput> pageList = new PageList<>();
         if (code == null){
             productEntity = productRepository.searchProductByName(name, pageable);
-//            Long count = productRepository.countByProduct();
-//            pageList.setTotal(count);
-            if (productEntity.isEmpty()) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "There is no product available !");
-            }
+            Long count = productRepository.countProductByName(name);
+            pageList.setTotal(count);
         }else {
             productEntity = productRepository.searchProductNameByCategory(name, code, pageable);
-            if (productEntity.isEmpty()) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "There is no product available !");
-            }
-            Long countProductByCategory = productRepository.countByProductCode(code);
+            Long countProductByCategory = productRepository.countByProductCode(name, code);
             pageList.setTotal(countProductByCategory);
         }
 
@@ -264,7 +303,7 @@ public class ProductService implements IProductService {
         List<ProductEntity> productEntities = new ArrayList<>();
         Pageable pageable = PageRequest.of(0,10);
         productEntities = productRepository.findRelatedProductByCode(code, pageable);
-//        Long count = productRepository.countByProductCode(code);
+//        Long count = productRepository.countByProductCode(code); 1
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
         productOutput.setRelatedProduct(results);
         return productOutput;
@@ -277,19 +316,7 @@ public class ProductService implements IProductService {
         return productOutput;
     }
 
-    @Override
-    public PageList<ProductOutput> findProductTrending(Pageable pageable) {
-        List<ProductEntity> productEntity = productRepository.findAllByTrendding(pageable);
-        Long count = productRepository.countByProduct();
-        List<ProductOutput> results = Converter.toList(productEntity, ProductOutput.class);
-        PageList<ProductOutput> pageList = new PageList<>();
-        pageList.setList(results);
-        pageList.setSuccess(true);
-        pageList.setTotal(count);
-        pageList.setPageSize(pageable.getPageSize());
-        pageList.setCurrentPage(pageable.getPageNumber());
-        return pageList;
-    }
+
 
     @Override
     public PageList<ProductOutput> findProductBestDeal(Pageable pageable, String code) {
@@ -297,18 +324,12 @@ public class ProductService implements IProductService {
         PageList<ProductOutput> pageList = new PageList<>();
         if (code == null) {
             productEntities = productRepository.findAllByBestDeal(pageable);
-            Long count = productRepository.countByProduct();
+            Long count = productRepository.countAllByCodeBestDeal();
             pageList.setTotal(count);
-            if (productEntities == null) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
-            }
         }else {
             productEntities = productRepository.findAllByCodeBestDeal(pageable,code);
-            Long countProductByCategory = productRepository.countByProductCode(code);
+            Long countProductByCategory = productRepository.countByCodeBestDeal(code);
             pageList.setTotal(countProductByCategory);
-            if (productEntities == null) {
-                throw new ClientException(HttpStatus.NOT_FOUND, "Not Found");
-            }
         }
         List<ProductOutput> results = Converter.toList(productEntities, ProductOutput.class);
         pageList.setList(results);

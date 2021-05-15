@@ -25,7 +25,7 @@ public class BrandApi {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public BrandDto update(@RequestBody BrandDto brandDto, @PathVariable("id") long id) {
         brandDto.setId(id);
-        return brandService.save(brandDto);
+        return brandService.update(brandDto);
     }
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity listBrand(Pageable pageable) {

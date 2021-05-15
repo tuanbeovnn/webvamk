@@ -26,6 +26,13 @@ public class UploadService implements IUploadFileService {
     @Value("${pathurl}")
     String UPLOAD_DIR;
 
+    /**
+     * @TuanNguyen
+     * @param files
+     * @param scaledWidth
+     * @param scaledHeight
+     * @return
+     */
     @Override
     public List<String> saveImage(MultipartFile[] files, int scaledWidth, int scaledHeight) {
         List<String> images = new ArrayList<>();

@@ -16,6 +16,7 @@ public class UserOutput {
     protected String phone;
     protected String username;
     protected String avatar;
+    protected int verifyAccount;
     protected List<String> roles = new ArrayList<>();
 
 }

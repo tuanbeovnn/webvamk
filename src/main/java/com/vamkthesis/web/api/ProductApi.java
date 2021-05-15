@@ -127,6 +127,18 @@ public class ProductApi {
         return pageList;
     }
 
+    @RequestMapping(value = "/listBrand", method = RequestMethod.GET)
+    public PageList<ProductOutput> listProductByBrand(Long id, Pageable pageable) {
+        PageList<ProductOutput> pageList = productService.findAllByBrands(id,pageable);
+        return pageList;
+    }
+
+    @RequestMapping(value = "/listCategoryByBrand", method = RequestMethod.GET)
+    public PageList<ProductOutput> listProductByBrand(@RequestParam String category, String brand, Pageable pageable) {
+        PageList<ProductOutput> pageList = productService.findAllByCategoryAndBrand(category,brand, pageable);
+        return pageList;
+    }
+
 
 
 //    @RequestMapping(value = "/searchByCategory", method = RequestMethod.GET)
