@@ -62,6 +62,34 @@ public class UploadService implements IUploadFileService {
         return images;
     }
 
+    @Override
+    public List<String> saveWithoutSizeImage(MultipartFile[] files) {
+        List<String> images = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                try {
+                    String uploadsDir = UPLOAD_DIR;
+                    if (!new File(uploadsDir).exists()) {
+                        new File(uploadsDir).mkdir();
+                    }
+                    String tagFile = file.getOriginalFilename();
+                    String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
+                    int tagFileSub = tagFile.lastIndexOf(".");
+                    String name = tagFile.substring(0,tagFileSub > 10 ? 10 : tagFileSub);
+                    String fullName = name +  LocalDateTime.now() + splitTag;
+                    String filePath = uploadsDir + fullName;
+                    File dest = new File(filePath);
+                    file.transferTo(dest);
+                    images.add(HOST+"/api/images/"+fullName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+        return images;
+    }
+
     public static void resize(String inputImagePath, int scaledWidth, int scaledHeight)
             throws IOException {
         // reads input image

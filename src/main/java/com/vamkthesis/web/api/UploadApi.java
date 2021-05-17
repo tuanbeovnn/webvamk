@@ -18,9 +18,19 @@ public class UploadApi {
     @Autowired
     private UploadService imageService;
 
-        @RequestMapping(value = "/uploadfile", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity handleFileUpload(@RequestParam("files") MultipartFile[] files, @RequestParam int scaledWidth,@RequestParam int scaledHeight) {
-        List<String> listImg = imageService.saveImage(files, scaledWidth,scaledHeight);
+    @RequestMapping(value = "/uploadfile", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity handleFileUpload(@RequestParam("files") MultipartFile[] files, @RequestParam int scaledWidth, @RequestParam int scaledHeight) {
+        List<String> listImg = imageService.saveImage(files, scaledWidth, scaledHeight);
+        if (listImg != null) {
+            return ResponseEntity.ok(listImg);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @RequestMapping(value = "/uploadImageWithoutSize", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity handleFileUploadWithoutSize(@RequestParam("files") MultipartFile[] files) {
+        List<String> listImg = imageService.saveWithoutSizeImage(files);
         if (listImg != null) {
             return ResponseEntity.ok(listImg);
         } else {
