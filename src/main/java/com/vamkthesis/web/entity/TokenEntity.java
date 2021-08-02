@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "tokens")
-public class TokenEntity extends BaseEntity{
+public class TokenEntity extends BaseEntity {
 
     private String secretToken;
     private String refreshToken;

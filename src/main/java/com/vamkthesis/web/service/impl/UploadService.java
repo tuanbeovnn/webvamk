@@ -27,11 +27,11 @@ public class UploadService implements IUploadFileService {
     String UPLOAD_DIR;
 
     /**
-     * @TuanNguyen
      * @param files
      * @param scaledWidth
      * @param scaledHeight
      * @return
+     * @TuanNguyen
      */
     @Override
     public List<String> saveImage(MultipartFile[] files, int scaledWidth, int scaledHeight) {
@@ -46,12 +46,12 @@ public class UploadService implements IUploadFileService {
                     String tagFile = file.getOriginalFilename();
                     String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
                     int tagFileSub = tagFile.lastIndexOf(".");
-                    String name = tagFile.substring(0,tagFileSub > 10 ? 10 : tagFileSub);
-                    String fullName = name +  LocalDateTime.now() + splitTag;
+                    String name = tagFile.substring(0, tagFileSub > 10 ? 10 : tagFileSub);
+                    String fullName = name + LocalDateTime.now() + splitTag;
                     String filePath = uploadsDir + fullName;
                     File dest = new File(filePath);
                     file.transferTo(dest);
-                    images.add(HOST+"/api/images/"+fullName);
+                    images.add(HOST + "/api/images/" + fullName);
                     UploadService.resize(filePath, scaledWidth, scaledHeight);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -75,12 +75,12 @@ public class UploadService implements IUploadFileService {
                     String tagFile = file.getOriginalFilename();
                     String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
                     int tagFileSub = tagFile.lastIndexOf(".");
-                    String name = tagFile.substring(0,tagFileSub > 10 ? 10 : tagFileSub);
-                    String fullName = name +  LocalDateTime.now() + splitTag;
+                    String name = tagFile.substring(0, tagFileSub > 10 ? 10 : tagFileSub);
+                    String fullName = name + LocalDateTime.now() + splitTag;
                     String filePath = uploadsDir + fullName;
                     File dest = new File(filePath);
                     file.transferTo(dest);
-                    images.add(HOST+"/api/images/"+fullName);
+                    images.add(HOST + "/api/images/" + fullName);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -115,8 +115,8 @@ public class UploadService implements IUploadFileService {
 
     @Override
     public String saveImage(String imageBase64, String imageName) {
-        byte[] imageByte= Base64.getDecoder().decode(imageBase64);
-        return saveImage(imageByte,imageName);
+        byte[] imageByte = Base64.getDecoder().decode(imageBase64);
+        return saveImage(imageByte, imageName);
     }
 
     public String saveImage(byte[] imageByte, String imageName) {
@@ -127,10 +127,10 @@ public class UploadService implements IUploadFileService {
             }
             String tagFile = imageName;
             String splitTag = tagFile.substring(tagFile.lastIndexOf("."));
-            String name = tagFile.substring(0,tagFile.lastIndexOf("."));
+            String name = tagFile.substring(0, tagFile.lastIndexOf("."));
             String fullName = name + LocalDateTime.now() + splitTag;
             new FileOutputStream(uploadsDir + fullName).write(imageByte);
-            return HOST+"/upload/"+fullName;
+            return HOST + "/upload/" + fullName;
         } catch (IOException e) {
             e.printStackTrace();
             throw new ServerException("Cannot save image");
@@ -138,14 +138,13 @@ public class UploadService implements IUploadFileService {
     }
 
 
-
     @Override
     public byte[] urlImage(String url) throws IOException {
         try {
-            BufferedImage bImage = ImageIO.read(new File(UPLOAD_DIR+url));
+            BufferedImage bImage = ImageIO.read(new File(UPLOAD_DIR + url));
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ImageIO.write(bImage, "png", bos );
-            byte [] data = bos.toByteArray();
+            ImageIO.write(bImage, "png", bos);
+            byte[] data = bos.toByteArray();
             return data;
         } catch (Exception e) {
             return null;
@@ -155,10 +154,10 @@ public class UploadService implements IUploadFileService {
     @Override
     public boolean remove(String url) {
         try {
-            File fileToDelete = new File(UPLOAD_DIR+url);
+            File fileToDelete = new File(UPLOAD_DIR + url);
             boolean success = fileToDelete.delete();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }

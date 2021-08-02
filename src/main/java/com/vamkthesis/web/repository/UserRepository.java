@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findOneByName(String name);
+
     UserEntity findOneByEmail(String email);
 
     @Query(value = "SELECT DISTINCT u.* , ( SELECT group_concat(r.name) FROM user_roles ur LEFT JOIN roles r ON ur.role_id = r.id WHERE 1=1 AND u.id = ur.user_id ) AS role FROM users u INNER JOIN user_roles ur ON u.id = ur.user_id INNER JOIN roles r ON ur.role_id = r.id WHERE 1=1 AND r.name = 'STAFF' or r.name='ACCESS_SWAGGER' or r.name='ADMIN'", nativeQuery = true)

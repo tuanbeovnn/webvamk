@@ -25,7 +25,6 @@ public class ProductUpdateInput extends AbtractInput {
     protected String brandCode;
 
 
-
 //    @JsonProperty("image")
 //    public String[] getImage() {
 //        return StringUtils.isEmpty(image) ? new String[]{} : image.split(";");

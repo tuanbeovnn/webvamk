@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "tags")
-public class TagsEntity extends BaseEntity{
+public class TagsEntity extends BaseEntity {
     private String name;
 
 //

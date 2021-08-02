@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IRoomService {
     RoomDto save(RoomInput roomInput) throws JsonProcessingException;
+
     List<RoomDto> findAllByMessageNotRead(Pageable pageable);
 
 }

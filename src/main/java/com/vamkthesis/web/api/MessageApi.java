@@ -24,8 +24,8 @@ public class MessageApi {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity save(@RequestBody MessageDto messageDto) throws JsonProcessingException {
-        MessageDto messageDto1 =  messageService.save(messageDto);
-        GenericMessage<byte[]> genericMessage = MessageBuilder.getBuilder().set("data",messageDto1).build();
+        MessageDto messageDto1 = messageService.save(messageDto);
+        GenericMessage<byte[]> genericMessage = MessageBuilder.getBuilder().set("data", messageDto1).build();
         template.send(String.format("/topic/%s", messageDto1.getRoomNumber()), genericMessage);
         return ResponseEntityBuilder.getBuilder().setMessage("Save room successfully").setDetails(messageDto1).build();
     }

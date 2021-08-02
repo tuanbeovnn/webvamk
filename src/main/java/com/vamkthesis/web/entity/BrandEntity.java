@@ -16,7 +16,7 @@ public class BrandEntity extends BaseEntity {
     private String name;
     private String code;
     private String image;
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductEntity> products = new ArrayList<>();
 
 

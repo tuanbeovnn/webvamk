@@ -81,9 +81,9 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     /**
-     * @TuanNguyen
      * @param loginInfo
      * @return
+     * @TuanNguyen
      */
     @Override
     public TokenDto login(LoginInput loginInfo) {

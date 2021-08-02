@@ -1,6 +1,5 @@
 package com.vamkthesis.web.service.impl;
 
-
 import com.vamkthesis.web.api.input.ChangeInfoInput;
 import com.vamkthesis.web.api.input.UpdateRoleInput;
 import com.vamkthesis.web.api.input.UserUpdateInput;
@@ -166,7 +165,7 @@ public class UserService implements IUserService {
         UserEntity userEntity = userRepository.findById(id).get();
         if (userEntity.getVerifyAccount() == 1) {
             userEntity.setVerifyAccount(0);
-        }else if (userEntity.getVerifyAccount() == 0){
+        } else if (userEntity.getVerifyAccount() == 0) {
             userEntity.setVerifyAccount(1);
         }
         userEntity = userRepository.save(userEntity);

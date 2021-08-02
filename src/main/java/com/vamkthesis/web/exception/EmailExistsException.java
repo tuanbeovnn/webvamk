@@ -7,11 +7,11 @@ public class EmailExistsException extends ClientException {
     public EmailExistsException(String fieldName, String message) {
         super("Validations errors");
         Map<String, Object> details = new HashMap<>();
-        details.put(fieldName,message);
+        details.put(fieldName, message);
         this.details = details;
 //        this.code = HttpStatus.valueOf(405);
     }
-    
+
 
     public EmailExistsException(int code) {
         super(code);
@@ -19,7 +19,7 @@ public class EmailExistsException extends ClientException {
     }
 
     public EmailExistsException(String message) {
-       this("email", message);
+        this("email", message);
     }
 
     public EmailExistsException() {

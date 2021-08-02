@@ -23,5 +23,4 @@ public class CategoryEntity extends BaseEntity {
 //    private List<ArticlesEntity> articles = new ArrayList<>();
 
 
-
 }

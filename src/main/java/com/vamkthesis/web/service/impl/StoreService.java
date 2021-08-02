@@ -15,9 +15,10 @@ import java.util.List;
 public class StoreService implements IStoreService {
     @Autowired
     private IStoreRepository storeRepository;
+
     @Override
     public StoreDto save(StoreDto storeDto) {
-        StoreEntity entity = Converter.toModel(storeDto,StoreEntity.class);
+        StoreEntity entity = Converter.toModel(storeDto, StoreEntity.class);
         entity = storeRepository.save(entity);
         return Converter.toModel(entity, StoreDto.class);
     }

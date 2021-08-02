@@ -24,7 +24,7 @@ public class StoreApi {
         return storeService.save(storeDto);
     }
 
-//    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    //    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 //    public BrandDto update(@RequestBody BrandDto brandDto, @PathVariable("id") long id) {
 //        brandDto.setId(id);
 //        return storeService.save(brandDto);

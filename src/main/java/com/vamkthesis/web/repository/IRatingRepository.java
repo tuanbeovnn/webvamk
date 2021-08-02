@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface IRatingRepository extends JpaRepository<RatingEntity, Long> {
@@ -19,7 +20,7 @@ public interface IRatingRepository extends JpaRepository<RatingEntity, Long> {
     RatingEntity findOneByProductId(long idProduct);
 
     @Query(value = "SELECT * from ratings WHERE product_id = ?1 order by created_date DESC", nativeQuery = true)
-    List<RatingEntity>  findAllByProductId(long id, Pageable pageable);
+    List<RatingEntity> findAllByProductId(long id, Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) from ratings WHERE product_id = ?1", nativeQuery = true)
     Long countByProduct(long id);

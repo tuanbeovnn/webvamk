@@ -44,8 +44,8 @@ public class IProductRepositoryImpl implements IProductRepositoryCustom {
                 .setOrigin(fieldSearch.getOrigin())
                 .build();
         Map<String, Object> map = ObjectToMap.toMap(singleFieldBuilder);
-        String where = MapToSqlSearch.toSql(map,prefix);
-       return specicalSql;
+        String where = MapToSqlSearch.toSql(map, prefix);
+        return specicalSql;
     }
 
     private String getSpecicalSqlString(ProductSearchBuilder fieldSearch) {
@@ -53,10 +53,10 @@ public class IProductRepositoryImpl implements IProductRepositoryCustom {
         String prefix = "p.";
 
         if (fieldSearch.getPriceFrom() != null) {
-            sql.append(" AND " + prefix + "price >="+ fieldSearch.getPriceFrom());
+            sql.append(" AND " + prefix + "price >=" + fieldSearch.getPriceFrom());
         }
         if (fieldSearch.getPriceTo() != null) {
-            sql.append(" AND " + prefix + "price <="+ fieldSearch.getPriceTo());
+            sql.append(" AND " + prefix + "price <=" + fieldSearch.getPriceTo());
         }
         return sql.toString();
     }

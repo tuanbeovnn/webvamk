@@ -6,12 +6,12 @@ import lombok.ToString;
 @Data
 @ToString
 public class Order {
-	private Long id;
-	private String email;
-	private double price;
-	private String currency;
-	private String method;
-	private String intent;
-	private String description;
+    private Long id;
+    private String email;
+    private double price;
+    private String currency;
+    private String method;
+    private String intent;
+    private String description;
 
 }

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RoleDto extends AbstractDto{
+public class RoleDto extends AbstractDto {
 
     private String name;
     private String discription;

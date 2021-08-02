@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectToMap {
-    public static <T> Map<String,Object> toMap(Object dto) {
-        Map<String,Object> map = new HashMap<>();
+    public static <T> Map<String, Object> toMap(Object dto) {
+        Map<String, Object> map = new HashMap<>();
         try {
             Class<?> cl = dto.getClass();
-            while(cl!=null) {
+            while (cl != null) {
                 Field[] fields = cl.getDeclaredFields();
 
-                for(Field field : fields) {
+                for (Field field : fields) {
                     field.setAccessible(true);
                     Object obj = field.get(dto);
 
-                    if(obj!=null) {
+                    if (obj != null) {
                         map.put(field.getName(), obj);
                     }
                 }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "ratings")
-public class RatingEntity extends BaseEntity{
+public class RatingEntity extends BaseEntity {
     private double rating;
     private String comment;
     private String email;

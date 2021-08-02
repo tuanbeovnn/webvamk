@@ -12,7 +12,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class UserDto extends AbstractDto{
+public class UserDto extends AbstractDto {
 
     public static final int PASSWORD_MIN_LENGTH = 4;
     public static final int PASSWORD_MAX_LENGTH = 100;

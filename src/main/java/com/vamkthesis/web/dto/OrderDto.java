@@ -31,12 +31,12 @@ public class OrderDto extends AbstractDto {
     private Long zipCode;
 
 
-//    private double discount;
+    //    private double discount;
 //    private double shippingFee;
 //    private double total;
 //    private double tax;
     private int status;
-//    private double price;
+    //    private double price;
 //    private double quantity;
     private List<OrderDetailsDto> details = new ArrayList<>();
 }

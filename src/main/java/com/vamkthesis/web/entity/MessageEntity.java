@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "messages")
-public class MessageEntity extends BaseEntity  {
+public class MessageEntity extends BaseEntity {
     private String content;
     private String roomNumber;
     private Long idUser;

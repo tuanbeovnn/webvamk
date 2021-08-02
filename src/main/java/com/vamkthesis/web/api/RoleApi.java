@@ -17,14 +17,14 @@ public class RoleApi {
     @Autowired
     private IRoleService roleService;
 
-    @RequestMapping(value="/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RoleDto createRole(@RequestBody RoleDto roleDto) {
         return roleService.save(roleDto);
     }
 
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
-    public void removeById(@RequestParam long id){
+    public void removeById(@RequestParam long id) {
         roleService.deleteById(id);
     }
 
@@ -37,7 +37,7 @@ public class RoleApi {
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseEntity showListRoles(@ModelAttribute RoleDto roleDto){
+    public ResponseEntity showListRoles(@ModelAttribute RoleDto roleDto) {
         List<RoleDto> roleDtos = roleService.findAll();
         return ResponseEntityBuilder.getBuilder().setDetails(roleDtos).setMessage("Get role list successfully").build();
     }

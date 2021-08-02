@@ -76,9 +76,9 @@ public class PaypalController {
                                 + "<p>Zipcode: %d</p></br>"
                                 + "<p>Quantity: %,.2f</p></br>"
                                 + "<p>Total: %,.2f</p></br>"
-                        + "<h4>Thank you for your order.This is an automatically generated email, please do not reply</h4></br>"
-                        ,orderEntity.getFirstName(), orderEntity.getLastName(), orderEntity.getMobile(),
-                        orderEntity.getEmail(),orderEntity.getAddress(),orderEntity.getCountry(),orderEntity.getCity(),
+                                + "<h4>Thank you for your order.This is an automatically generated email, please do not reply</h4></br>"
+                        , orderEntity.getFirstName(), orderEntity.getLastName(), orderEntity.getMobile(),
+                        orderEntity.getEmail(), orderEntity.getAddress(), orderEntity.getCountry(), orderEntity.getCity(),
                         orderEntity.getZipCode(), orderEntity.getQuantity(), orderEntity.getTotal());
 //
                 emailService.sendMail(orderEntity.getEmail(), "Your Order", "" + message);

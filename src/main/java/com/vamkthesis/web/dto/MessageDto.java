@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MessageDto extends AbstractDto<MessageDto> {
-//    private String id;
+    //    private String id;
     private String content;
     private String roomNumber;
     private Long idUser;

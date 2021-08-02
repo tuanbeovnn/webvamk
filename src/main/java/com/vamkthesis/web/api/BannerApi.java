@@ -17,26 +17,27 @@ public class BannerApi {
     @Autowired
     private IBannerService bannerService;
 
-    @Secured ("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
-    public void removeById(@RequestParam long id){
+    public void removeById(@RequestParam long id) {
         bannerService.delete(id);
     }
 
-    @Secured ("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public BannerInput createBanner(@RequestBody BannerInput bannerInput) {
         return bannerService.save(bannerInput);
     }
 
-    @Secured ("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/list/{position}", method = RequestMethod.GET)
-    public List<BannerInput> showListBannerByP(@PathVariable int position){
+    public List<BannerInput> showListBannerByP(@PathVariable int position) {
         return bannerService.findAllByPosition(position);
     }
-    @Secured ("ROLE_ADMIN")
+
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public PageList<BannerInput> showListBanner(Pageable pageable){
+    public PageList<BannerInput> showListBanner(Pageable pageable) {
         return bannerService.findAll(pageable);
     }
 

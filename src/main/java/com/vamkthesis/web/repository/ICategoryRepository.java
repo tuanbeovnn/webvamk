@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long> {
     CategoryEntity findOneByCode(String code);
+
     List<CategoryEntity> findAll();
 }

@@ -18,7 +18,7 @@ public class ProductEntity extends BaseEntity {
 
     private String name;
 
-    @Column(name = "image" , columnDefinition = "TEXT")
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
     private String color;
     @Column(columnDefinition = "text")
@@ -80,7 +80,6 @@ public class ProductEntity extends BaseEntity {
 //            joinColumns = @JoinColumn(name = "product_id"),
 //            inverseJoinColumns = @JoinColumn(name = "tag_id"))
 //    private List<TagsEntity> tags = new ArrayList<>();
-
 
 
 }

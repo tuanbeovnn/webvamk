@@ -58,7 +58,7 @@ public class CustomExceptionHandler {
                 .build();
     }
 
-//    @ExceptionHandler(value = ClientException.class)
+    //    @ExceptionHandler(value = ClientException.class)
 //    @ResponseBody
 //    public ResponseEntity clientException(ClientException ex) throws Exception {
 //        return ResponseEntityBuilder.getBuilder()
@@ -73,9 +73,9 @@ public class CustomExceptionHandler {
         ResponseEntityBuilder builder = ResponseEntityBuilder.getBuilder()
                 .setCode(ex instanceof CustomException ? ((CustomException) ex).code : HttpStatus.INTERNAL_SERVER_ERROR)
                 .setMessage(ex.getMessage());
-        if(ex instanceof ClientException){
+        if (ex instanceof ClientException) {
             ClientException exception = (ClientException) ex;
-            if(exception.details != null){
+            if (exception.details != null) {
                 builder.setDetails((exception.details));
             }
         }

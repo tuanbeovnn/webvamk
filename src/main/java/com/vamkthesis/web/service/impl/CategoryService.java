@@ -23,19 +23,19 @@ public class CategoryService implements ICategoryService {
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
-       CategoryEntity categoryEntity = new CategoryEntity();
-       if (categoryDto.getId() != null){
-           CategoryEntity oldCategory = categoryRepository.findById(categoryDto.getId()).get();
-           categoryEntity = Converter.toModel(categoryDto, oldCategory.getClass());
-       }else {
-           categoryEntity = Converter.toModel(categoryDto, CategoryEntity.class);
-           CategoryEntity categoryEntity1 = categoryRepository.findOneByCode(categoryDto.getCode());
-           if (categoryEntity1 != null) {
-               throw new EmailExistsException("Category code has been already exists.");
-           }
-       }
-       categoryEntity = categoryRepository.save(categoryEntity);
-       return Converter.toModel(categoryEntity,CategoryDto.class);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        if (categoryDto.getId() != null) {
+            CategoryEntity oldCategory = categoryRepository.findById(categoryDto.getId()).get();
+            categoryEntity = Converter.toModel(categoryDto, oldCategory.getClass());
+        } else {
+            categoryEntity = Converter.toModel(categoryDto, CategoryEntity.class);
+            CategoryEntity categoryEntity1 = categoryRepository.findOneByCode(categoryDto.getCode());
+            if (categoryEntity1 != null) {
+                throw new EmailExistsException("Category code has been already exists.");
+            }
+        }
+        categoryEntity = categoryRepository.save(categoryEntity);
+        return Converter.toModel(categoryEntity, CategoryDto.class);
     }
 
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
@@ -49,7 +49,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<CategoryDto> findAll() {
         List<CategoryEntity> categoryEntity = categoryRepository.findAll();
-        return categoryEntity.stream().map(e->Converter.toModel(e,CategoryDto.class)).collect(Collectors.toList());
+        return categoryEntity.stream().map(e -> Converter.toModel(e, CategoryDto.class)).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")

@@ -13,14 +13,24 @@ import javax.mail.MessagingException;
 
 public interface IUserService {
     UserDto save(UserDto userDto) throws MessagingException;
-    void delete (long[] ids);
+
+    void delete(long[] ids);
+
     void deleteById(long id);
+
     UserDto findUserById(Long id);
+
     void verifyAccount(String email);
+
     UserUpdateInput updateInfo(UserUpdateInput userUpdateInput);
+
     void sendEmailVerify(String email) throws MessagingException;
+
     boolean changePassword(ChangeInfoInput changeInfoInput);
+
     UserOutput updateRole(Long id, UpdateRoleInput updateRoleInput);
+
     PageList<UserOutput> findAllByRoles(Pageable pageable);
+
     void deactiveAccount(Long id);
 }

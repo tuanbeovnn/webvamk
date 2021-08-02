@@ -70,7 +70,6 @@ public class AuthenticationApi {
     private String secret;
 
 
-
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity registration(@RequestBody @Valid UserDto userDto) throws MessagingException {
         UserDto dto = userService.save(userDto);
@@ -107,8 +106,8 @@ public class AuthenticationApi {
 //
 //            tokenService.saveToken(tokenDTO);
 ////            res.put("token", token);
-            TokenDto tokenDto = tokenService.login(loginInfo);
-            return ResponseEntityBuilder.getBuilder().setMessage("Login success").setDetails(tokenDto).build();
+        TokenDto tokenDto = tokenService.login(loginInfo);
+        return ResponseEntityBuilder.getBuilder().setMessage("Login success").setDetails(tokenDto).build();
 
     }
 
@@ -147,9 +146,9 @@ public class AuthenticationApi {
 
 
     /**
-     * @TuanNguyen
      * @param tokenInput
      * @return
+     * @TuanNguyen
      */
     @RequestMapping(value = "/facebook/login", method = RequestMethod.POST)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "true : success, false: failed"),})
@@ -185,7 +184,6 @@ public class AuthenticationApi {
     }
 
 
-
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "true : success, false: failed"),
@@ -200,14 +198,14 @@ public class AuthenticationApi {
             @ApiResponse(code = 200, message = "true : success, false: failed"),
     })
     public ResponseEntity verifyAccount(@Valid @ModelAttribute EmailDto emailDto) throws MessagingException {
-        if (!DigestUtils.sha256Hex(emailDto.getEmail()+emailDto.getExpire()+ secret).equals(emailDto.getSignature())){
+        if (!DigestUtils.sha256Hex(emailDto.getEmail() + emailDto.getExpire() + secret).equals(emailDto.getSignature())) {
             throw new ClientException("Signature not correct");
         }
-        if (System.currentTimeMillis() > emailDto.getExpire()){
+        if (System.currentTimeMillis() > emailDto.getExpire()) {
             throw new ClientException("Expired");
         }
         userService.verifyAccount(emailDto.getEmail());
-        emailService.sendMail(emailDto.getEmail(),"Verify account Successfully","");
+        emailService.sendMail(emailDto.getEmail(), "Verify account Successfully", "");
         return ResponseEntityBuilder.getBuilder().setMessage("Your account has been verified successfully").build();
     }
 

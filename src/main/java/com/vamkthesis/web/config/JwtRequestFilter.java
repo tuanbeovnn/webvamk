@@ -53,8 +53,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         logger.info(String.format("%s  %s", request.getMethod(), request.getRequestURI()));
         String req = request.getRequestURI();
 
-        final String requestTokenHeader = request.getHeader("Authorization");
-        if (req.startsWith("/ws")){
+        String requestTokenHeader = request.getHeader("Authorization");
+        if (req.startsWith("/ws")) {
             chain.doFilter(request, response);
             return;
         }
@@ -71,10 +71,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     if (!request.getRequestURI().contains("/api/auth"))
                         throw new TokenExpiredException();
                 }
-                String secretToken = jwtToken.substring(jwtToken.lastIndexOf(".")+1);
+                String secretToken = jwtToken.substring(jwtToken.lastIndexOf(".") + 1);
                 tokenEntity = tokenRepository.findOneBySecret(secretToken);
 
-                if (tokenEntity.getEnvoke() == 1 ){
+                if (tokenEntity.getEnvoke() == 1) {
                     throw new ClientException("your Token was expired");
                 }
 //                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
@@ -83,8 +83,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 MyUserDTO myUserDTO = new ModelMapper().map(claims, MyUserDTO.class);
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                for (String role : myUserDTO.getRoles()){
-                    authorities.add(new SimpleGrantedAuthority("ROLE_"+role));
+                for (String role : myUserDTO.getRoles()) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
                 }
                 Authentication auth = new UsernamePasswordAuthenticationToken(myUserDTO, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -108,6 +108,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
-        return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     }
 }

@@ -27,9 +27,10 @@ public class BrandApi {
         brandDto.setId(id);
         return brandService.update(brandDto);
     }
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity listBrand(Pageable pageable) {
-       List<BrandDto> brandDtos = brandService.findAll(pageable);
-       return ResponseEntityBuilder.getBuilder().setDetails(brandDtos).build();
+        List<BrandDto> brandDtos = brandService.findAll(pageable);
+        return ResponseEntityBuilder.getBuilder().setDetails(brandDtos).build();
     }
 }

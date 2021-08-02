@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface IUploadFileService {
     List<String> saveImage(MultipartFile[] files, int scaledWidth, int scaledHeight);
+
     List<String> saveWithoutSizeImage(MultipartFile[] files);
+
     String saveImage(String imageBase64, String imageName);
+
     byte[] urlImage(String url) throws IOException;
+
     boolean remove(String url);
 }

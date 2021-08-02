@@ -70,6 +70,7 @@ public class ProductSearchBuilder {
             this.warranty = warranty;
             return this;
         }
+
         public ProductSearchBuilder build() {
             return new ProductSearchBuilder(this);
         }

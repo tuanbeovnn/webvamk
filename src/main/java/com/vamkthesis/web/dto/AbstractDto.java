@@ -10,7 +10,7 @@ import java.util.Date;
 public class AbstractDto<T> {
 
     private Long id;
-//    private String createdBy;
+    //    private String createdBy;
     private Date createdDate;
 //    private String modifiedBy;
 //    private Date modifiedDate;

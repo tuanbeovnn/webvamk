@@ -60,7 +60,7 @@ public class UserApi {
     @RequestMapping(value = "/updateRole/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateRole(@RequestBody UpdateRoleInput roleInput, @PathVariable("id") long id) {
         roleInput.setId(id);
-        UserOutput userOutput =  userService.updateRole(id, roleInput);
+        UserOutput userOutput = userService.updateRole(id, roleInput);
         return ResponseEntityBuilder.getBuilder().setMessage("Update role successfully").setDetails(userOutput).build();
     }
 

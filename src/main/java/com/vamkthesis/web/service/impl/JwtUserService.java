@@ -24,23 +24,23 @@ public class JwtUserService implements UserDetailsService {
     private UserRepository userRepository;
 
     /**
-     * @TuanNguyen
      * @param email
      * @return
      * @throws UsernameNotFoundException
+     * @TuanNguyen
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
 //        UsernamePasswordAuthenticationTokenCustom authenticationTokenToken = (UsernamePasswordAuthenticationTokenCustom) SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = userRepository.findOneByEmail(email);
-        if(userEntity == null){
+        if (userEntity == null) {
             throw new UsernameNotFoundException("User not found");
         }
         MyUserDTO user = Converter.toModel(userEntity, MyUserDTO.class);
         List<GrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().clear();
-        for(RoleEntity roleEntity : userEntity.getRoles()){
+        for (RoleEntity roleEntity : userEntity.getRoles()) {
             user.getRoles().add(roleEntity.getName());
             authorities.add(new SimpleGrantedAuthority(roleEntity.getName()));
         }

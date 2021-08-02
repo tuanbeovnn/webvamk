@@ -45,8 +45,8 @@ public class RoomService implements IRoomService {
         MyUserDTO myUserDTO = (MyUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<RoomDto> roomDtos = new ArrayList<>();
 //        if (myUserDTO.getRoles().contains("STAFF")) {
-            List<RoomEntity> roomEntities = roomRepository.findAllByMessageNotRead(myUserDTO.getId(), pageable);
-            roomDtos  = Converter.toList(roomEntities, RoomDto.class);
+        List<RoomEntity> roomEntities = roomRepository.findAllByMessageNotRead(myUserDTO.getId(), pageable);
+        roomDtos = Converter.toList(roomEntities, RoomDto.class);
 //        }
         return roomDtos;
     }

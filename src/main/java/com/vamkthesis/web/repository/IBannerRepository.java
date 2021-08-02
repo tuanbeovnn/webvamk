@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface IBannerRepository extends JpaRepository<BannerEntity, Long> {
-    @Query(value = "select * from banners where banners.position = ?",nativeQuery = true)
+    @Query(value = "select * from banners where banners.position = ?", nativeQuery = true)
     List<BannerEntity> findAllByPosition(int position);
 }

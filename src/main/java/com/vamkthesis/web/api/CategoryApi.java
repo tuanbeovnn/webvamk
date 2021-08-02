@@ -26,8 +26,9 @@ public class CategoryApi {
         categoryDto.setId(id);
         return categoryService.update(categoryDto);
     }
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<CategoryDto> showListCategory(@ModelAttribute CategoryDto categoryDto){
+    public List<CategoryDto> showListCategory(@ModelAttribute CategoryDto categoryDto) {
         return categoryService.findAll();
     }
 

@@ -15,7 +15,7 @@ public class MyUserDTO extends UserDto implements UserDetails, CredentialsContai
 
     Collection<? extends GrantedAuthority> authorities;
 
-    public MyUserDTO(){
+    public MyUserDTO() {
     }
 
     @Override

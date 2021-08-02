@@ -35,7 +35,7 @@ public class BrandService implements IBrandService {
     @Override
     public List<BrandDto> findAll(Pageable pageable) {
         List<BrandEntity> brandEntity = brandRepository.findAll(pageable).getContent();
-        List<BrandDto> brandDto = Converter.toList(brandEntity,BrandDto.class);
+        List<BrandDto> brandDto = Converter.toList(brandEntity, BrandDto.class);
         return brandDto;
     }
 
@@ -47,7 +47,7 @@ public class BrandService implements IBrandService {
         brandEntity.setImage(brandDto.getImage());
         brandEntity.setName(brandDto.getName());
         brandEntity = brandRepository.save(brandEntity);
-        BrandDto brandDto1 = Converter.toModel(brandEntity,BrandDto.class);
+        BrandDto brandDto1 = Converter.toModel(brandEntity, BrandDto.class);
         return brandDto1;
     }
 }

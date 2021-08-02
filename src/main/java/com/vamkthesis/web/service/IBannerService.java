@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface IBannerService {
     BannerInput save(BannerInput input);
+
     void delete(Long id);
+
     List<BannerInput> findAllByPosition(int position);
+
     PageList<BannerInput> findAll(Pageable pageable);
 }

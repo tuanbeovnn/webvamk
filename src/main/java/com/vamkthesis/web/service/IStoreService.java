@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface IStoreService {
     StoreDto save(StoreDto storeDto);
+
     List<StoreDto> findAll(Pageable pageable);
 }

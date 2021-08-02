@@ -8,7 +8,7 @@ public class CustomException extends RuntimeException {
     public HttpStatus code;
     public Map<String, Object> details;
 
-    public CustomException(HttpStatus code, String message, Map<String,Object> details) {
+    public CustomException(HttpStatus code, String message, Map<String, Object> details) {
         super(message);
         this.code = code;
         this.details = details;

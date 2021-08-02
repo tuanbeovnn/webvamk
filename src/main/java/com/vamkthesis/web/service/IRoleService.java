@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IRoleService {
     RoleDto save(RoleDto roleDto);
+
     void deleteById(Long id);
+
     List<RoleDto> findAll();
 }

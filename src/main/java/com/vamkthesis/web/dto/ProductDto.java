@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductDto extends AbstractDto<ProductDto> {
 
     private String name;
-//    private String origin;
+    //    private String origin;
 //    private String warranty;
     private String[] image;
     private String description;
@@ -24,7 +24,6 @@ public class ProductDto extends AbstractDto<ProductDto> {
     @JsonIgnore
     private String brandCode;
     private String code;
-
 
 
 }

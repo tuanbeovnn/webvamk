@@ -61,9 +61,10 @@ public class ProductApi {
         RatingOutPut ratingOutPut = ratingService.saveNew(ratingInput);
         return ResponseEntityBuilder.getBuilder().setDetails(ratingOutPut).setMessage("Save rating successfully").build();
     }
+
     @RequestMapping(value = "/listRating", method = RequestMethod.GET)
     public PageList<RatingOutPut> showListProductRating(@RequestParam long id, Pageable pageable) {
-        PageList<RatingOutPut> pageList = ratingService.findAllByProductId(id,pageable);
+        PageList<RatingOutPut> pageList = ratingService.findAllByProductId(id, pageable);
         return pageList;
     }
 
@@ -81,20 +82,18 @@ public class ProductApi {
 
     @PreAuthorize("hasRole('ROLE_STAFF') or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity save(@RequestBody @Valid ProductInput productInput){
+    public ResponseEntity save(@RequestBody @Valid ProductInput productInput) {
         ProductOutput productOutput = productService.save(productInput);
         return ResponseEntityBuilder.getBuilder().setDetails(productOutput).setMessage("Save product successfully").build();
 
     }
 
 
-
     @RequestMapping(value = "/trendingCate", method = RequestMethod.GET)
     public PageList<ProductOutput> showListProductCategoryTredingCategory(String code, Pageable pageable) {
-        PageList<ProductOutput> pageList = productService.findAllByCategoryTrending(code,pageable);
+        PageList<ProductOutput> pageList = productService.findAllByCategoryTrending(code, pageable);
         return pageList;
     }
-
 
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
@@ -105,13 +104,13 @@ public class ProductApi {
 
     @RequestMapping(value = "/bestdeal", method = RequestMethod.GET)
     public PageList<ProductOutput> showListProductBestDeal(Pageable pageable, String code) {
-        PageList<ProductOutput> pageList = productService.findProductBestDeal(pageable,code);
+        PageList<ProductOutput> pageList = productService.findProductBestDeal(pageable, code);
         return pageList;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public PageList<ProductOutput> listProduct(String code, Pageable pageable) {
-        PageList<ProductOutput> pageList = productService.findAllByCategory(code,pageable);
+        PageList<ProductOutput> pageList = productService.findAllByCategory(code, pageable);
         return pageList;
     }
 
@@ -129,16 +128,15 @@ public class ProductApi {
 
     @RequestMapping(value = "/listBrand", method = RequestMethod.GET)
     public PageList<ProductOutput> listProductByBrand(Long id, Pageable pageable) {
-        PageList<ProductOutput> pageList = productService.findAllByBrands(id,pageable);
+        PageList<ProductOutput> pageList = productService.findAllByBrands(id, pageable);
         return pageList;
     }
 
     @RequestMapping(value = "/listCategoryByBrand", method = RequestMethod.GET)
     public PageList<ProductOutput> listProductByBrand(@RequestParam String category, String brand, Pageable pageable) {
-        PageList<ProductOutput> pageList = productService.findAllByCategoryAndBrand(category,brand, pageable);
+        PageList<ProductOutput> pageList = productService.findAllByCategoryAndBrand(category, brand, pageable);
         return pageList;
     }
-
 
 
 //    @RequestMapping(value = "/searchByCategory", method = RequestMethod.GET)

@@ -23,9 +23,9 @@ public class MessageService implements IMessageService {
     private IRoomRepository roomRepository;
 
     /**
-     * @TuanNguyen
      * @param messageDto
      * @return
+     * @TuanNguyen
      */
     @Override
     public MessageDto save(MessageDto messageDto) {
@@ -35,10 +35,10 @@ public class MessageService implements IMessageService {
     }
 
     /**
-     * @TuanNguyen
      * @param room
      * @param pageable
      * @return
+     * @TuanNguyen
      */
     @Override
     public List<MessageDto> findAllByNewest(String room, Pageable pageable) {

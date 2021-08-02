@@ -35,9 +35,9 @@ public class OrderService implements IOrderService {
     private IOrderDetailsRepository orderDetailsRepository;
 
     /**
-     * @Tuan Nguyen
      * @param orderDto
      * @return
+     * @Tuan Nguyen
      */
     @Override
     public OrderDto save(OrderDto orderDto) {
@@ -50,10 +50,10 @@ public class OrderService implements IOrderService {
         AtomicReference<Double> quantity = new AtomicReference<>(0.0);
 //        AtomicReference<Double> price = new AtomicReference<>(0.0);
 
-        List<OrderDetailEntity> orderDetailEntity = orderDto.getDetails().stream().map(e-> {
-             OrderDetailEntity orderDetailEntity1 = new OrderDetailEntity();
+        List<OrderDetailEntity> orderDetailEntity = orderDto.getDetails().stream().map(e -> {
+            OrderDetailEntity orderDetailEntity1 = new OrderDetailEntity();
             ProductEntity productEntity = productRepository.findById(e.getProductId()).get();
-            if (e.getQuantity() > productEntity.getQuantity()){
+            if (e.getQuantity() > productEntity.getQuantity()) {
                 throw new ClientException("We only have " + productEntity.getQuantity());
             }
 
@@ -80,7 +80,7 @@ public class OrderService implements IOrderService {
         orderEntity.setQuantity(quantity.get());
 //        orderEntity.setPrice(price.get());
         orderEntity = orderRepository.save(orderEntity);
-        OrderDto orderDto1 = Converter.toModel(orderEntity,OrderDto.class);
+        OrderDto orderDto1 = Converter.toModel(orderEntity, OrderDto.class);
         return orderDto1;
     }
 }

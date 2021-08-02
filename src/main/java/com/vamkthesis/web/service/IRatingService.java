@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface IRatingService {
     RatingEntity save(RatingInput ratingInput);
+
     RatingOutPut saveNew(RatingInput ratingInput);
+
     PageList<RatingOutPut> findAllByProductId(long id, Pageable pageable);
 
 }

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface IBrandService {
     BrandDto save(BrandDto brandDto);
+
     List<BrandDto> findAll(Pageable pageable);
+
     BrandDto update(BrandDto brandDto);
 }
